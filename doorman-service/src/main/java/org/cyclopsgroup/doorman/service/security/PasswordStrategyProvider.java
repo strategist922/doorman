@@ -1,4 +1,4 @@
-package org.cyclopsgroup.service.security;
+package org.cyclopsgroup.doorman.service.security;
 
 import org.apache.commons.lang.StringUtils;
 

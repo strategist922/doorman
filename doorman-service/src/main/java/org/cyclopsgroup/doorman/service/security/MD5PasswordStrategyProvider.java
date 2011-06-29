@@ -1,4 +1,4 @@
-package org.cyclopsgroup.service.security;
+package org.cyclopsgroup.doorman.service.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -53,5 +53,4 @@ class MD5PasswordStrategyProvider
     {
         return StringUtils.equals( encode( password, userId ), expected );
     }
-
 }
