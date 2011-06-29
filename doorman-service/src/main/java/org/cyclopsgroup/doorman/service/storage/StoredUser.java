@@ -9,7 +9,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.cyclopsgroup.service.security.PasswordStrategy;
+import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 

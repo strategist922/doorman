@@ -7,9 +7,9 @@ import static org.junit.Assert.assertNull;
 import java.util.UUID;
 
 import org.cyclopsgroup.caff.util.UUIDUtils;
+import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.StoredUserSignUpRequest;
-import org.cyclopsgroup.service.security.PasswordStrategy;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.junit.Before;

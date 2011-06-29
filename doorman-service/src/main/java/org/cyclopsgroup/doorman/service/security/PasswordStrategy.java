@@ -1,4 +1,4 @@
-package org.cyclopsgroup.service.security;
+package org.cyclopsgroup.doorman.service.security;
 
 /**
  * Enum of supported approaches to store and match password

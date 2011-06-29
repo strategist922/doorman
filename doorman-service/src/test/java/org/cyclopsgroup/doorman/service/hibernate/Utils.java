@@ -3,10 +3,10 @@ package org.cyclopsgroup.doorman.service.hibernate;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.StoredUserState;
 import org.cyclopsgroup.doorman.service.storage.StoredUserType;
-import org.cyclopsgroup.service.security.PasswordStrategy;
 import org.joda.time.DateTime;
 
 /**
