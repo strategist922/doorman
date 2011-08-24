@@ -74,7 +74,7 @@ public class StoredUser
      */
     @Column( name = "creation_date", nullable = false )
     @Type( type = "datetime" )
-    public final DateTime getCreationDate()
+    public DateTime getCreationDate()
     {
         return creationDate;
     }
@@ -197,7 +197,7 @@ public class StoredUser
      */
     @Column( name = "user_type", nullable = false, length = 8 )
     @Enumerated( EnumType.STRING )
-    public final StoredUserType getUserType()
+    public StoredUserType getUserType()
     {
         return userType;
     }
@@ -213,7 +213,7 @@ public class StoredUser
     /**
      * @param creationDate {@link #getCreationDate()}
      */
-    public final void setCreationDate( DateTime creationDate )
+    public void setCreationDate( DateTime creationDate )
     {
         this.creationDate = creationDate;
     }
@@ -317,7 +317,7 @@ public class StoredUser
     /**
      * @param userType {@link #getUserType()}
      */
-    public final void setUserType( StoredUserType userType )
+    public void setUserType( StoredUserType userType )
     {
         this.userType = userType;
     }

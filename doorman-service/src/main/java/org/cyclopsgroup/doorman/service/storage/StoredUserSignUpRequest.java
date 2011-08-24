@@ -61,7 +61,7 @@ public class StoredUserSignUpRequest
      * @return Domain name which indicates where the user was registered in the very beginning
      */
     @Column( name = "domain_name", length = 32, nullable = false )
-    public final String getDomainName()
+    public String getDomainName()
     {
         return domainName;
     }
@@ -152,7 +152,7 @@ public class StoredUserSignUpRequest
     /**
      * @param domainName {@link #getDomainName()}
      */
-    public final void setDomainName( String domainName )
+    public void setDomainName( String domainName )
     {
         this.domainName = domainName;
     }
