@@ -10,6 +10,7 @@ import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserOperationResult;
 import org.cyclopsgroup.doorman.api.UserSession;
 import org.cyclopsgroup.doorman.api.UserSessionAttributes;
+import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.UserSignUpResponse;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
 import org.cyclopsgroup.doorman.service.dao.DataOperationException;

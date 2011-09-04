@@ -1,6 +1,5 @@
-package org.cyclopsgroup.doorman.service.core;
+package org.cyclopsgroup.doorman.api;
 
-import org.cyclopsgroup.doorman.api.UserEventListener;
 
 /**
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>

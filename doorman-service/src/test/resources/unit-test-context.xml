@@ -34,7 +34,7 @@
 		<property name="password" value="sa" />
 	</bean>
 
-	<bean class="org.cyclopsgroup.doorman.service.core.SimpleUserSessionConfig" />
+	<bean class="org.cyclopsgroup.doorman.api.SimpleUserSessionConfig" />
 	<alias name="org.cyclopsgroup.doorman.TransactionManager" alias="transactionManager" />
 	<import resource="classpath:org/cyclopsgroup/doorman/core-service.xml" />
 </beans>

@@ -1,8 +1,5 @@
-package org.cyclopsgroup.doorman.service.core;
+package org.cyclopsgroup.doorman.api;
 
-import org.apache.commons.lang.Validate;
-import org.cyclopsgroup.doorman.api.AbstractUserEventListener;
-import org.cyclopsgroup.doorman.api.UserEventListener;
 
 /**
  * Real time configuration for user and session service implementations
@@ -46,7 +43,6 @@ public class SimpleUserSessionConfig
     @Override
     public final void setDomainName( String domainName )
     {
-        Validate.notNull( domainName, "Domain name can't be NULL" );
         this.domainName = domainName;
     }
 
@@ -56,7 +52,6 @@ public class SimpleUserSessionConfig
     @Override
     public final void setListener( UserEventListener listener )
     {
-        Validate.notNull( listener, "Listener can't be NULL" );
         this.listener = listener;
     }
 }
