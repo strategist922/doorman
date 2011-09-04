@@ -1,8 +1,4 @@
-package org.cyclopsgroup.doorman.service.servlet;
-
-import org.apache.commons.lang.Validate;
-import org.cyclopsgroup.doorman.api.SessionService;
-import org.cyclopsgroup.doorman.api.UserSession;
+package org.cyclopsgroup.doorman.api;
 
 /**
  * Configuration for session injection filter
@@ -43,7 +39,7 @@ public class SessionInjectionFilterContext
     /**
      * @return Name of session attribute that stores user session
      */
-    final String getSessionAttribute()
+    public final String getSessionAttribute()
     {
         return sessionAttribute;
     }
@@ -61,12 +57,12 @@ public class SessionInjectionFilterContext
     /**
      * @return Name of cookie that stores session ID
      */
-    final String getSessionIdCookie()
+    public final String getSessionIdCookie()
     {
         return sessionIdCookie;
     }
 
-    final SessionService getSessionService()
+    public final SessionService getSessionService()
     {
         return sessionService;
     }
@@ -74,7 +70,7 @@ public class SessionInjectionFilterContext
     /**
      * @return When destination requires user identity, page is redirected to this URL to let user sign in
      */
-    final String getSignInUrl()
+    public final String getSignInUrl()
     {
         return signInUrl;
     }
@@ -108,7 +104,6 @@ public class SessionInjectionFilterContext
      */
     public final void setSessionCheckingInterval( int sessionCheckingInterval )
     {
-        Validate.isTrue( sessionCheckingInterval > 0, "Invalid interval value " + sessionCheckingInterval );
         this.sessionCheckingInterval = sessionCheckingInterval;
     }
 

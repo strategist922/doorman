@@ -19,6 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
+import org.cyclopsgroup.doorman.api.SessionInjectionFilterContext;
 import org.cyclopsgroup.doorman.api.UnauthenticatedError;
 import org.cyclopsgroup.doorman.api.UserSession;
 import org.cyclopsgroup.doorman.api.UserSessionAttributes;
