@@ -41,7 +41,7 @@ class HibernateUserSessionDAO
         StoredUser user = session.getUser();
         if ( user != null )
         {
-            session.getUser().setLastVisit( now );
+            user.setLastVisit( now );
         }
         getHibernateTemplate().update( session );
         return session;
