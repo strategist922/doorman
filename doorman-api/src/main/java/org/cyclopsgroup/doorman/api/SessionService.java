@@ -56,7 +56,7 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/user/request" )
-    UserSignUpResponse requestSignUp( @PathParam( "sessionId" ) String sessionId, User user );
+    UserSignUpResult requestSignUp( @PathParam( "sessionId" ) String sessionId, User user );
 
     /**
      * Sign in and associated user with current session

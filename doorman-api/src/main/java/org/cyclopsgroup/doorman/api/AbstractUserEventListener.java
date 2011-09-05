@@ -12,7 +12,7 @@ public abstract class AbstractUserEventListener
      * @inheritDoc
      */
     @Override
-    public void signUpRequested( String sessionId, User requestedUser )
+    public void signUpRequested( String sessionId, UserSignUpResult result )
     {
     }
 }

@@ -11,7 +11,7 @@ public interface UserEventListener
      * Called when a new user account is requested
      *
      * @param sessionId Session that requests the sign up
-     * @param requestedUser Requested user POJO
+     * @param result Result of sign up operation
      */
-    void signUpRequested( String sessionId, User requestedUser );
+    void signUpRequested( String sessionId, UserSignUpResult result );
 }

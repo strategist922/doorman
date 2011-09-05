@@ -52,6 +52,5 @@ class HibernateUserDAO
     {
         user.setLastModified( new DateTime() );
         getHibernateTemplate().saveOrUpdate( user );
-        getHibernateTemplate().flush();
     }
 }

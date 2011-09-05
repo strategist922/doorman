@@ -9,26 +9,51 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
 @XmlRootElement( name = "UserSignUpResponse" )
-public class UserSignUpResponse
+public class UserSignUpResult
 {
     private UserOperationResult result;
+
+    private User user;
+
+    /**
+     * The originally requested user
+     *
+     * @return User information
+     */
+    @XmlElement
+    public final User getUser()
+    {
+        return user;
+    }
+
+    /**
+     * Set user information
+     *
+     * @param user User information
+     */
+    public final void setUser( User user )
+    {
+        this.user = user;
+    }
 
     private String token;
 
     /**
      * Default constructor called by JAXB
      */
-    public UserSignUpResponse()
+    public UserSignUpResult()
     {
     }
 
     /**
      * @param result Result enumeration
+     * @param user Originally requested user
      * @param token Secret token
      */
-    public UserSignUpResponse( UserOperationResult result, String token )
+    public UserSignUpResult( UserOperationResult result, User user, String token )
     {
         this.result = result;
+        this.user = user;
         this.token = token;
     }
 

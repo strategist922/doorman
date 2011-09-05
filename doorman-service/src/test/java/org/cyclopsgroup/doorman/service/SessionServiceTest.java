@@ -88,6 +88,10 @@ public class SessionServiceTest
         user = s.getUser();
         assertNotNull( user );
         assertEquals( "Jiaqi", user.getDisplayName() );
+
+        UserService users =
+            (UserService) applicationContext.getBeansOfType( UserService.class ).values().iterator().next();
+        users.authenticate( id + "@cyclopsgroup.org", "password" );
     }
 
     /**

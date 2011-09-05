@@ -11,7 +11,7 @@ import org.cyclopsgroup.doorman.api.UserOperationResult;
 import org.cyclopsgroup.doorman.api.UserSession;
 import org.cyclopsgroup.doorman.api.UserSessionAttributes;
 import org.cyclopsgroup.doorman.api.UserSessionConfig;
-import org.cyclopsgroup.doorman.api.UserSignUpResponse;
+import org.cyclopsgroup.doorman.api.UserSignUpResult;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
 import org.cyclopsgroup.doorman.service.dao.UserDAO;
 import org.cyclopsgroup.doorman.service.dao.UserSessionDAO;
@@ -153,12 +153,12 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
-    public UserSignUpResponse requestSignUp( String sessionId, User user )
+    public UserSignUpResult requestSignUp( String sessionId, User user )
     {
         StoredUser existingUser = userDao.findNonPendingUser( user.getUserName() );
         if ( existingUser != null )
         {
-            return new UserSignUpResponse( UserOperationResult.IDENTITY_EXISTED, null );
+            return new UserSignUpResult( UserOperationResult.IDENTITY_EXISTED, user, null );
         }
         StoredUser storaduser = createUserForSignUp( user );
         String userId = storaduser.getUserId();
@@ -170,9 +170,9 @@ public class DefaultSessionService
 
         LOG.info( "Sign up request " + userId + " is saved" );
         user.setUserId( userId );
-        config.getListener().signUpRequested( sessionId, user );
-
-        return new UserSignUpResponse( UserOperationResult.SUCCESSFUL, token );
+        UserSignUpResult result = new UserSignUpResult( UserOperationResult.SUCCESSFUL, user, token );
+        config.getListener().signUpRequested( sessionId, result );
+        return result;
     }
 
     /**
