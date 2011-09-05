@@ -47,12 +47,13 @@ public class DefaultUserService
     @Transactional( readOnly = true )
     public UserOperationResult authenticate( String userName, String secureCredential )
     {
-        StoredUser u = userDao.findNonPendingUser( userName );
-        if ( u == null )
+        StoredUser user = userDao.findNonPendingUser( userName );
+        if ( user == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
         }
-        if ( StringUtils.equals( secureCredential, u.getPasswordStrategy().encode( u.getPassword(), u.getUserId() ) ) )
+        if ( StringUtils.equals( user.getPasswordStrategy().encode( secureCredential, user.getUserId() ),
+                                 user.getPassword() ) )
         {
             return UserOperationResult.SUCCESSFUL;
         }

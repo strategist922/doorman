@@ -106,15 +106,18 @@ public class DefaultSessionService
         StoredUser storedUser = new StoredUser();
         ServiceUtils.copyUser( user, storedUser );
 
+        storedUser.setUserId( userId );
         storedUser.setDomainName( config.getDomainName() );
         storedUser.setUserType( UserType.LOCAL );
         storedUser.setPasswordStrategy( passwordStrategy );
-        storedUser.setPassword( passwordStrategy.encode( user.getPassword(), userId ) );
+
+        String storedPassword = passwordStrategy.encode( user.getPassword(), userId );
+        storedUser.setPassword( storedPassword );
 
         DateTime now = new DateTime();
         storedUser.setCreationDate( now );
         storedUser.setLastModified( now );
-        storedUser.setUserId( userId );
+
         return storedUser;
     }
 
@@ -182,16 +185,16 @@ public class DefaultSessionService
     @Transactional
     public UserOperationResult signIn( String sessionId, String userName, String password )
     {
-        StoredUser u = userDao.findNonPendingUser( userName );
-        if ( u == null )
+        StoredUser user = userDao.findNonPendingUser( userName );
+        if ( user == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
         }
-        if ( !StringUtils.equals( password, u.getPassword() ) )
+        if ( !StringUtils.equals( user.getPasswordStrategy().encode( password, user.getUserId() ), user.getPassword() ) )
         {
             return UserOperationResult.AUTHENTICATION_FAILURE;
         }
-        userSessionDao.updateUser( sessionId, u );
+        userSessionDao.updateUser( sessionId, user );
         return UserOperationResult.SUCCESSFUL;
     }
 
