@@ -5,8 +5,12 @@ package org.cyclopsgroup.doorman.service.storage;
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
-public enum StoredUserState
+public enum UserState
 {
+    /**
+     * User is not activated yet
+     */
+    PENDING,
     /**
      * User is active and valid
      */

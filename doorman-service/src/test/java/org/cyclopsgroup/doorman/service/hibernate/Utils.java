@@ -5,8 +5,8 @@ import java.util.TimeZone;
 
 import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
-import org.cyclopsgroup.doorman.service.storage.StoredUserState;
-import org.cyclopsgroup.doorman.service.storage.StoredUserType;
+import org.cyclopsgroup.doorman.service.storage.UserState;
+import org.cyclopsgroup.doorman.service.storage.UserType;
 import org.joda.time.DateTime;
 
 /**
@@ -27,10 +27,10 @@ class Utils
 
         user.setUserId( id );
         user.setUserName( id + "@cyclopsgroup.org" );
-        user.setUserState( StoredUserState.ACTIVE );
+        user.setUserState( UserState.ACTIVE );
         user.setCreationDate( new DateTime() );
         user.setDomainName( "cyclopsgroup.org" );
-        user.setUserType( StoredUserType.LOCAL );
+        user.setUserType( UserType.LOCAL );
 
         user.setTimeZoneId( TimeZone.getDefault().getID() );
         user.setCountryCode( Locale.getDefault().getCountry() );

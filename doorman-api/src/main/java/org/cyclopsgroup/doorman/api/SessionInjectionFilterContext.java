@@ -62,6 +62,9 @@ public class SessionInjectionFilterContext
         return sessionIdCookie;
     }
 
+    /**
+     * @return The session service associated with context
+     */
     public final SessionService getSessionService()
     {
         return sessionService;

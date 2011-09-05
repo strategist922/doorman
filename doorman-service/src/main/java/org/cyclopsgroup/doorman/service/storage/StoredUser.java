@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -19,16 +20,25 @@ import org.joda.time.DateTime;
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
 @Entity
-@Table( name = "dm_user", uniqueConstraints = { @UniqueConstraint( columnNames = { "user_name" } ),
-    @UniqueConstraint( columnNames = { "email_address" } ) } )
-@NamedQuery( name = StoredUser.QUERY_BY_NAME_OR_ID, query = "FROM StoredUser WHERE userName = ? OR userId = ?" )
+@Table( name = "dm_user", uniqueConstraints = { @UniqueConstraint( columnNames = { "user_name", "activation_token" } ),
+    @UniqueConstraint( columnNames = { "email_address", "activation_token" } ) } )
+@NamedQueries( {
+    @NamedQuery( name = StoredUser.QUERY_BY_NAME_OR_ID, query = "FROM StoredUser WHERE (userName = :nameOrId OR userId = :nameOrId) AND userState <> 'PENDING'" ),
+    @NamedQuery( name = StoredUser.QUERY_BY_TOKEN, query = "FROM StoredUser WHERE activationToken= :token AND userState = 'PENDING'" ) } )
 @org.hibernate.annotations.Entity( dynamicUpdate = true )
 public class StoredUser
 {
     /**
      * Name of the query that looks for user based on given user name
      */
-    public static final String QUERY_BY_NAME_OR_ID = "findUserByNameOrId";
+    public static final String QUERY_BY_NAME_OR_ID = "findNonPendingUserByNameOrId";
+
+    /**
+     * Name of query that looks for pending user with given activation token
+     */
+    public static final String QUERY_BY_TOKEN = "findPendingUserByToken";
+
+    private String activationToken;
 
     private String countryCode;
 
@@ -56,9 +66,20 @@ public class StoredUser
 
     private String userName;
 
-    private StoredUserState userState;
+    private UserState userState;
 
-    private StoredUserType userType;
+    private UserType userType;
+
+    /**
+     * Get the token used for user activation. If user is already activated, token value is null
+     *
+     * @return Token used to activate user
+     */
+    @Column( name = "activation_token", length = 255 )
+    public String getActivationToken()
+    {
+        return activationToken;
+    }
 
     /**
      * @return Country code of country that user prefers
@@ -187,7 +208,7 @@ public class StoredUser
      */
     @Column( name = "user_state", nullable = false, length = 8 )
     @Enumerated( EnumType.STRING )
-    public StoredUserState getUserState()
+    public UserState getUserState()
     {
         return userState;
     }
@@ -197,9 +218,19 @@ public class StoredUser
      */
     @Column( name = "user_type", nullable = false, length = 8 )
     @Enumerated( EnumType.STRING )
-    public StoredUserType getUserType()
+    public UserType getUserType()
     {
         return userType;
+    }
+
+    /**
+     * Set activation token of user
+     *
+     * @param activationToken Activation token to set
+     */
+    public void setActivationToken( String activationToken )
+    {
+        this.activationToken = activationToken;
     }
 
     /**
@@ -309,7 +340,7 @@ public class StoredUser
     /**
      * @param userState {@link #getUserState()}
      */
-    public void setUserState( StoredUserState userState )
+    public void setUserState( UserState userState )
     {
         this.userState = userState;
     }
@@ -317,7 +348,7 @@ public class StoredUser
     /**
      * @param userType {@link #getUserType()}
      */
-    public void setUserType( StoredUserType userType )
+    public void setUserType( UserType userType )
     {
         this.userType = userType;
     }

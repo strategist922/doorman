@@ -7,11 +7,8 @@ import static org.junit.Assert.assertNull;
 import java.util.UUID;
 
 import org.cyclopsgroup.caff.util.UUIDUtils;
-import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
-import org.cyclopsgroup.doorman.service.storage.StoredUserSignUpRequest;
 import org.hibernate.SessionFactory;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,32 +37,6 @@ public class HibernateUserDAOTest
     }
 
     /**
-     * Verify create user works
-     */
-    @Test
-    public void testCreateUser()
-    {
-        String id = UUIDUtils.randomStringId();
-        StoredUserSignUpRequest request = new StoredUserSignUpRequest();
-        request.setDisplayName( "haha" );
-        request.setEmailAddress( id + "@cyclopsgroup.org" );
-        request.setPassword( "pass" );
-        request.setPasswordStrategy( PasswordStrategy.PLAIN );
-        request.setUserName( id + "@cyclopsgroup.org" );
-        request.setRequestDate( new DateTime() );
-        request.setDomainName( "cyclopsgroup.org" );
-        request.setRequestId( id );
-        request.setRequestToken( id );
-
-        dao.getHibernateTemplate().save( request );
-        dao.createUser( id );
-
-        StoredUser user = dao.findByNameOrId( id + "@cyclopsgroup.org" );
-        assertNotNull( user );
-        assertEquals( "pass", user.getPassword() );
-    }
-
-    /**
      * Insert a record and find it by name
      */
     @Test
@@ -73,14 +44,29 @@ public class HibernateUserDAOTest
     {
         String id = UUID.randomUUID().toString();
 
-        StoredUser user = dao.findByNameOrId( id + "@cyclopsgroup.org" );
+        StoredUser user = dao.findNonPendingUser( id + "@cyclopsgroup.org" );
         assertNull( user );
 
         user = Utils.createStoredUser( id );
         dao.getHibernateTemplate().save( user );
         dao.getHibernateTemplate().flush();
 
-        user = dao.findByNameOrId( id + "@cyclopsgroup.org" );
+        user = dao.findNonPendingUser( id + "@cyclopsgroup.org" );
+        assertNotNull( user );
+        assertEquals( "pass", user.getPassword() );
+    }
+
+    /**
+     * Verify save user works
+     */
+    @Test
+    public void testSaveUser()
+    {
+        String id = UUIDUtils.randomStringId();
+        StoredUser request = Utils.createStoredUser( id );
+
+        dao.saveUser( request );
+        StoredUser user = dao.findNonPendingUser( id + "@cyclopsgroup.org" );
         assertNotNull( user );
         assertEquals( "pass", user.getPassword() );
     }

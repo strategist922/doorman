@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.cyclopsgroup.caff.util.UUIDUtils;
@@ -74,6 +75,9 @@ public class SessionServiceTest
         user.setPassword( "password" );
         user.setUserName( id + "@cyclopsgroup.org" );
         user.setDomainName( "cyclopsgroup.org" );
+        user.setCountryCode( "US" );
+        user.setLanguageCode( "en" );
+        user.setTimeZoneId( TimeZone.getDefault().getID() );
         String token = service.requestSignUp( id, user ).getToken();
 
         UserSession s = service.getSession( id );
@@ -101,6 +105,9 @@ public class SessionServiceTest
         user.setPassword( "password" );
         user.setUserName( id + "@cyclopsgroup.org" );
         user.setDomainName( "cyclopsgroup.org" );
+        user.setCountryCode( "US" );
+        user.setLanguageCode( "en" );
+        user.setTimeZoneId( TimeZone.getDefault().getID() );
 
         service.signUp( id, user );
 

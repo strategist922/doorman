@@ -13,14 +13,14 @@ import org.cyclopsgroup.doorman.api.UserSessionAttributes;
 import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.UserSignUpResponse;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
-import org.cyclopsgroup.doorman.service.dao.DataOperationException;
 import org.cyclopsgroup.doorman.service.dao.UserDAO;
 import org.cyclopsgroup.doorman.service.dao.UserSessionDAO;
 import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
-import org.cyclopsgroup.doorman.service.storage.StoredUserSignUpRequest;
-import org.cyclopsgroup.doorman.service.storage.StoredUserState;
+import org.cyclopsgroup.doorman.service.storage.UserState;
+import org.cyclopsgroup.doorman.service.storage.UserType;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,64 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultSessionService
     implements SessionService
 {
-
     private static final Log LOG = LogFactory.getLog( DefaultSessionService.class );
-
-    private final UserDAO userDao;
-
-    private final UserSessionDAO userSessionDao;
-
-    private final UserSessionConfig config;
-
-    private PasswordStrategy passwordStrategy = PasswordStrategy.MD5;
-
-    /**
-     * @param daoFactory Factory instance that creates necessary DAOs
-     * @param config Configuration that provides real time settings
-     */
-    @Autowired
-    public DefaultSessionService( DAOFactory daoFactory, UserSessionConfig config )
-    {
-        this.userSessionDao = daoFactory.createUserSessionDAO();
-        this.userDao = daoFactory.createUserDAO();
-        this.config = config;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    @Transactional
-    public UserOperationResult confirmSignUp( String sessionId, String token )
-    {
-        StoredUser user;
-        try
-        {
-            user = userDao.createUser( token );
-        }
-        catch ( DataOperationException e )
-        {
-            LOG.error( "Can't create user with token " + token, e );
-            return e.getOperationResult();
-        }
-        userSessionDao.updateUser( sessionId, user );
-        return UserOperationResult.SUCCESSFUL;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    @Transactional
-    public UserSession getSession( String sessionId )
-    {
-        StoredUserSession s = userSessionDao.pingSession( sessionId );
-        if ( s == null )
-        {
-            return null;
-        }
-        return createUserSession( s );
-    }
 
     private static UserSession createUserSession( StoredUserSession s )
     {
@@ -118,6 +61,78 @@ public class DefaultSessionService
         return session;
     }
 
+    private final UserSessionConfig config;
+
+    private PasswordStrategy passwordStrategy = PasswordStrategy.MD5;
+
+    private final UserDAO userDao;
+
+    private final UserSessionDAO userSessionDao;
+
+    /**
+     * @param daoFactory Factory instance that creates necessary DAOs
+     * @param config Configuration that provides real time settings
+     */
+    @Autowired
+    public DefaultSessionService( DAOFactory daoFactory, UserSessionConfig config )
+    {
+        this.userSessionDao = daoFactory.createUserSessionDAO();
+        this.userDao = daoFactory.createUserDAO();
+        this.config = config;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @Transactional
+    public UserOperationResult confirmSignUp( String sessionId, String token )
+    {
+        StoredUser user = userDao.findPendingUserWithToken( token );
+        if ( user == null )
+        {
+            return UserOperationResult.NO_SUCH_IDENTITY;
+        }
+        user.setActivationToken( null );
+        user.setUserState( UserState.ACTIVE );
+        userDao.saveUser( user );
+        userSessionDao.updateUser( sessionId, user );
+        return UserOperationResult.SUCCESSFUL;
+    }
+
+    private StoredUser createUserForSignUp( User user )
+    {
+        String userId = UUIDUtils.randomStringId();
+        StoredUser storedUser = new StoredUser();
+        ServiceUtils.copyUser( user, storedUser );
+
+        storedUser.setDomainName( config.getDomainName() );
+        storedUser.setUserType( UserType.LOCAL );
+        storedUser.setPasswordStrategy( passwordStrategy );
+        storedUser.setPassword( passwordStrategy.encode( user.getPassword(), userId ) );
+
+        DateTime now = new DateTime();
+        storedUser.setCreationDate( now );
+        storedUser.setLastModified( now );
+        storedUser.setUserId( userId );
+        return storedUser;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @Transactional
+    public UserSession getSession( String sessionId )
+    {
+        StoredUserSession s = userSessionDao.pingSession( sessionId );
+        if ( s == null )
+        {
+            return null;
+        }
+        return createUserSession( s );
+    }
+
     /**
      * @inheritDoc
      */
@@ -140,32 +155,24 @@ public class DefaultSessionService
     @Transactional
     public UserSignUpResponse requestSignUp( String sessionId, User user )
     {
-        StoredUser existingUser = userDao.findByNameOrId( user.getUserName() );
+        StoredUser existingUser = userDao.findNonPendingUser( user.getUserName() );
         if ( existingUser != null )
         {
             return new UserSignUpResponse( UserOperationResult.IDENTITY_EXISTED, null );
         }
-        StoredUserSignUpRequest request = new StoredUserSignUpRequest();
-        request.setDisplayName( user.getDisplayName() );
-        request.setEmailAddress( user.getEmailAddress() );
+        StoredUser storaduser = createUserForSignUp( user );
+        String userId = storaduser.getUserId();
+        String token = UUIDUtils.randomStringId() + userId;
 
-        String id = user.getUserId();
-        request.setPassword( passwordStrategy.encode( user.getPassword(), id ) );
-        request.setPasswordStrategy( passwordStrategy );
+        storaduser.setUserState( UserState.PENDING );
+        storaduser.setActivationToken( token );
+        userDao.saveUser( storaduser );
 
-        request.setRequestId( id );
-        request.setRequestToken( id );
-        request.setUserName( user.getUserName() );
-        request.setDomainName( config.getDomainName() );
-        request.setTimeZoneId( user.getTimeZoneId() );
-        userDao.saveSignupRequest( request );
-
-        LOG.info( "Sign up request " + id + " is saved" );
-
-        user.setUserId( id );
+        LOG.info( "Sign up request " + userId + " is saved" );
+        user.setUserId( userId );
         config.getListener().signUpRequested( sessionId, user );
 
-        return new UserSignUpResponse( UserOperationResult.SUCCESSFUL, id );
+        return new UserSignUpResponse( UserOperationResult.SUCCESSFUL, token );
     }
 
     /**
@@ -175,7 +182,7 @@ public class DefaultSessionService
     @Transactional
     public UserOperationResult signIn( String sessionId, String userName, String password )
     {
-        StoredUser u = userDao.findByNameOrId( userName );
+        StoredUser u = userDao.findNonPendingUser( userName );
         if ( u == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
@@ -206,24 +213,16 @@ public class DefaultSessionService
     @Transactional
     public UserOperationResult signUp( String sessionId, User user )
     {
-        StoredUser existing = userDao.findByNameOrId( user.getUserName() );
+        StoredUser existing = userDao.findNonPendingUser( user.getUserName() );
         if ( existing != null )
         {
             return UserOperationResult.IDENTITY_EXISTED;
         }
+        StoredUser storedUser = createUserForSignUp( user );
+        storedUser.setUserState( UserState.ACTIVE );
 
-        String userId = UUIDUtils.randomStringId();
-        StoredUser u = new StoredUser();
-        u.setDomainName( config.getDomainName() );
-
-        u.setPassword( passwordStrategy.encode( user.getPassword(), userId ) );
-        u.setPasswordStrategy( passwordStrategy );
-
-        u.setUserId( userId );
-        u.setUserState( StoredUserState.ACTIVE );
-        ServiceUtils.copyUser( user, u );
-        userDao.createUser( u );
-        userSessionDao.updateUser( sessionId, u );
+        userDao.saveUser( storedUser );
+        userSessionDao.updateUser( sessionId, storedUser );
         return UserOperationResult.SUCCESSFUL;
     }
 

@@ -1,7 +1,6 @@
 package org.cyclopsgroup.doorman.service.dao;
 
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
-import org.cyclopsgroup.doorman.service.storage.StoredUserSignUpRequest;
 
 /**
  * DAO of {@link StoredUser} and {@link StoredUserSignUpRequest}
@@ -11,39 +10,20 @@ import org.cyclopsgroup.doorman.service.storage.StoredUserSignUpRequest;
 public interface UserDAO
 {
     /**
-     * Create new user object directly
-     *
-     * @param user User object to create
-     * @return Created user
-     */
-    void createUser( StoredUser user );
-
-    /**
-     * Finish signup and create user with given token
-     *
-     * @param requestToken Secret token to finish signup process
-     * @return User model that is created
-     * @throws DataOperationException When common exception happens and specific result is expected to return
-     */
-    StoredUser createUser( String requestToken )
-        throws DataOperationException;
-
-    /**
-     * Find user with given user name or unique ID
+     * Find a non-pending user with given user name or unique ID
      *
      * @param nameOrId Given user name or ID
      * @return User model or NULL if no such user is found
      */
-    StoredUser findByNameOrId( String nameOrId );
+    StoredUser findNonPendingUser( String nameOrId );
 
     /**
-     * Create and save new signup request
+     * Find pending user with given activation token
      *
-     * @param request Sign up request
-     * @throws DataOperationException When common exception happens and specific result is expected to return
+     * @param token Activation token
+     * @return User POJO or NULL if user is not found
      */
-    void saveSignupRequest( StoredUserSignUpRequest request )
-        throws DataOperationException;
+    StoredUser findPendingUserWithToken( String token );
 
     /**
      * @param user User to update

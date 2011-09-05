@@ -2,7 +2,6 @@ package org.cyclopsgroup.doorman.service.dao;
 
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
-import org.cyclopsgroup.doorman.service.storage.StoredUserSignUpRequest;
 
 /**
  * Facade of all DAOs

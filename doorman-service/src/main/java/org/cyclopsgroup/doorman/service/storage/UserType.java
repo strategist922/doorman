@@ -5,7 +5,7 @@ package org.cyclopsgroup.doorman.service.storage;
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
-public enum StoredUserType
+public enum UserType
 {
     /**
      * User credential is maintained in local system

@@ -1,5 +1,7 @@
 package org.cyclopsgroup.doorman.service.security;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 /**
  * Enum of supported approaches to store and match password
  *
@@ -10,18 +12,25 @@ public enum PasswordStrategy
     /**
      * Plain text password is preserved
      */
-    PLAIN( new PlainPasswordStrategyProvider() ),
+    PLAIN
+    {
+        @Override
+        public String encode( String password, String userId )
+        {
+            return password;
+        }
+    },
     /**
      * Password is encoded with MD5 32
      */
-    MD5( new MD5PasswordStrategyProvider() );
-
-    private final PasswordStrategyProvider provider;
-
-    private PasswordStrategy( PasswordStrategyProvider provider )
+    MD5
     {
-        this.provider = provider;
-    }
+        @Override
+        public String encode( String password, String userId )
+        {
+            return DigestUtils.md5Hex( userId + ":" + password );
+        }
+    };
 
     /**
      * Encode password to value to store
@@ -30,21 +39,5 @@ public enum PasswordStrategy
      * @param userId Id of user to store password for
      * @return Encoded password
      */
-    public String encode( String password, String userId )
-    {
-        return provider.encode( password, userId );
-    }
-
-    /**
-     * Verify if given password matches stored encoded password
-     *
-     * @param password Given password to match
-     * @param userId Id of user to match
-     * @param expected Expected encoded password
-     * @return True if password matches
-     */
-    public boolean match( String password, String userId, String expected )
-    {
-        return provider.match( password, userId, expected );
-    }
+    public abstract String encode( String password, String userId );
 }

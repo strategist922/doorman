@@ -7,6 +7,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang.StringUtils;
 import org.cyclopsgroup.doorman.api.ListUserRequest;
 import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserOperationResult;
@@ -46,12 +47,12 @@ public class DefaultUserService
     @Transactional( readOnly = true )
     public UserOperationResult authenticate( String userName, String secureCredential )
     {
-        StoredUser u = userDao.findByNameOrId( userName );
+        StoredUser u = userDao.findNonPendingUser( userName );
         if ( u == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
         }
-        if ( u.getPasswordStrategy().match( secureCredential, u.getUserId(), u.getPassword() ) )
+        if ( StringUtils.equals( secureCredential, u.getPasswordStrategy().encode( u.getPassword(), u.getUserId() ) ) )
         {
             return UserOperationResult.SUCCESSFUL;
         }
@@ -65,7 +66,7 @@ public class DefaultUserService
     @Transactional( readOnly = true )
     public User get( String userName )
     {
-        StoredUser u = userDao.findByNameOrId( userName );
+        StoredUser u = userDao.findNonPendingUser( userName );
         if ( u == null )
         {
             Response error = Response.status( Status.NOT_FOUND ).entity( "User " + userName + " not found" ).build();
@@ -100,7 +101,7 @@ public class DefaultUserService
     @Transactional( readOnly = true )
     public UserOperationResult ping( String userName )
     {
-        StoredUser u = userDao.findByNameOrId( userName );
+        StoredUser u = userDao.findNonPendingUser( userName );
         if ( u == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
@@ -115,7 +116,7 @@ public class DefaultUserService
     @Transactional
     public void update( String userName, User user )
     {
-        StoredUser u = userDao.findByNameOrId( userName );
+        StoredUser u = userDao.findNonPendingUser( userName );
         if ( u == null )
         {
             Response error = Response.status( Status.NOT_FOUND ).entity( "User " + userName + " not found" ).build();
