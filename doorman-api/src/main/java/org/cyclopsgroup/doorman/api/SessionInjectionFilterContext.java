@@ -117,4 +117,15 @@ public class SessionInjectionFilterContext
     {
         this.sessionIdCookie = sessionIdCookie;
     }
+
+    /**
+     * A chance for user to define the filtering logic of http filter
+     *
+     * @param path Path to evaluate
+     * @return If true, fitler would bypass session injection and go straight for next step
+     */
+    public boolean shouldIgnorePath( String path )
+    {
+        return false;
+    }
 }

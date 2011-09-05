@@ -70,6 +70,15 @@ public class SessionInjectionFilter
     {
         DateTime now = new DateTime();
         HttpServletRequest req = (HttpServletRequest) request;
+        String requestedPath =
+            StringUtils.trimToEmpty( req.getServletPath() ) + StringUtils.trimToEmpty( req.getPathInfo() );
+
+        if ( context.shouldIgnorePath( requestedPath ) )
+        {
+            chain.doFilter( request, response );
+            return;
+        }
+
         UserSession session = (UserSession) req.getSession().getAttribute( context.getSessionAttribute() );
         if ( session == null
             || session.getLastActivity().plusSeconds( context.getSessionCheckingInterval() ).isBefore( now ) )
