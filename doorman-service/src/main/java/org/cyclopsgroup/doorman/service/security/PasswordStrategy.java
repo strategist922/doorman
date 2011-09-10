@@ -1,6 +1,8 @@
 package org.cyclopsgroup.doorman.service.security;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+
 
 /**
  * Enum of supported approaches to store and match password
@@ -28,7 +30,8 @@ public enum PasswordStrategy
         @Override
         public String encode( String password, String userId )
         {
-            return DigestUtils.md5Hex( userId + ":" + password );
+            byte[] sum = DigestUtils.md5( userId + ":" + password );
+            return Base64.encodeBase64URLSafeString( sum );
         }
     };
 
