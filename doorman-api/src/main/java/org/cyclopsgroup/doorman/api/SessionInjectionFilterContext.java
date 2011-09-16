@@ -1,5 +1,7 @@
 package org.cyclopsgroup.doorman.api;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Configuration for session injection filter
  *
@@ -121,10 +123,10 @@ public class SessionInjectionFilterContext
     /**
      * A chance for user to define the filtering logic of http filter
      *
-     * @param path Path to evaluate
+     * @param request Request to test
      * @return If true, fitler would bypass session injection and go straight for next step
      */
-    public boolean shouldIgnorePath( String path )
+    public boolean shouldIgnorePath( HttpServletRequest request )
     {
         return false;
     }

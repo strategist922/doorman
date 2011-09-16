@@ -70,10 +70,8 @@ public class SessionInjectionFilter
     {
         DateTime now = new DateTime();
         HttpServletRequest req = (HttpServletRequest) request;
-        String requestedPath =
-            StringUtils.trimToEmpty( req.getServletPath() ) + StringUtils.trimToEmpty( req.getPathInfo() );
 
-        if ( context.shouldIgnorePath( requestedPath ) )
+        if ( context.shouldIgnorePath( req ) )
         {
             chain.doFilter( request, response );
             return;
