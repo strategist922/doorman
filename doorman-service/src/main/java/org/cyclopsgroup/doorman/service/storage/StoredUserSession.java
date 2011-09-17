@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.cyclopsgroup.doorman.api.UserSession;
+import org.cyclopsgroup.doorman.api.UserSessionAttributes;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -36,6 +38,32 @@ public class StoredUserSession
     private StoredUser user;
 
     private String userAgent;
+
+    /**
+     * Create user session POJO for this session
+     *
+     * @return User session pojo instance
+     */
+    public UserSession toUserSession()
+    {
+        UserSession session = new UserSession();
+        session.setCreationDate( getCreationDate() );
+        session.setLastActivity( getLastModified() );
+        session.setSessionId( getSessionId() );
+
+        // Set attributes
+        UserSessionAttributes attributes = new UserSessionAttributes();
+        attributes.setAcceptLanguage( getAcceptLanguage() );
+        attributes.setIpAddress( getIpAddress() );
+        attributes.setUserAgent( getUserAgent() );
+        session.setAttributes( attributes );
+
+        if ( getUser() != null )
+        {
+            session.setUser( getUser().toUser() );
+        }
+        return session;
+    }
 
     /**
      * @return Accept language from browser

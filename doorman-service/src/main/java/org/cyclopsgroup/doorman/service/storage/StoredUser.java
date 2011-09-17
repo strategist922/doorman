@@ -10,6 +10,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -69,6 +70,22 @@ public class StoredUser
     private UserState userState;
 
     private UserType userType;
+
+    /**
+     * Copy values from given User POJO
+     *
+     * @param from Given user pojo
+     */
+    public void copyFrom( User from )
+    {
+        setCountryCode( from.getCountryCode() );
+        setDisplayName( from.getDisplayName() );
+        setDomainName( from.getDomainName() );
+        setEmailAddress( from.getEmailAddress() );
+        setLanguageCode( from.getLanguageCode() );
+        setTimeZoneId( from.getTimeZoneId() );
+        setUserName( from.getUserName() );
+    }
 
     /**
      * Get the token used for user activation. If user is already activated, token value is null
@@ -351,5 +368,26 @@ public class StoredUser
     public void setUserType( UserType userType )
     {
         this.userType = userType;
+    }
+
+    /**
+     * Create User POJO from itself
+     *
+     * @return User POJO
+     */
+    public User toUser()
+    {
+        User user = new User();
+        user.setCountryCode( getCountryCode() );
+        user.setCreationDate( getCreationDate() );
+        user.setDisplayName( getDisplayName() );
+        user.setDomainName( getDomainName() );
+        user.setEmailAddress( getEmailAddress() );
+        user.setLanguageCode( getLanguageCode() );
+        user.setLastVisit( getLastVisit() );
+        user.setTimeZoneId( getTimeZoneId() );
+        user.setUserId( getUserId() );
+        user.setUserName( getUserName() );
+        return user;
     }
 }

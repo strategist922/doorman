@@ -21,8 +21,6 @@ import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
 import org.cyclopsgroup.doorman.service.storage.UserState;
 import org.cyclopsgroup.doorman.service.storage.UserType;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,29 +35,6 @@ public class DefaultSessionService
     implements SessionService
 {
     private static final Log LOG = LogFactory.getLog( DefaultSessionService.class );
-
-    private static UserSession createUserSession( StoredUserSession s )
-    {
-        UserSession session = new UserSession();
-        session.setCreationDate( new LocalDateTime( s.getCreationDate() ).toDateTime( DateTimeZone.UTC ) );
-        session.setLastActivity( new LocalDateTime( s.getLastModified() ).toDateTime( DateTimeZone.UTC ) );
-        session.setSessionId( s.getSessionId() );
-
-        // Set attributes
-        UserSessionAttributes attributes = new UserSessionAttributes();
-        attributes.setAcceptLanguage( s.getAcceptLanguage() );
-        attributes.setIpAddress( s.getIpAddress() );
-        attributes.setUserAgent( s.getUserAgent() );
-        session.setAttributes( attributes );
-
-        // Set user
-        StoredUser u = s.getUser();
-        if ( u != null )
-        {
-            session.setUser( ServiceUtils.createUser( u ) );
-        }
-        return session;
-    }
 
     private final UserSessionConfig config;
 
@@ -104,7 +79,7 @@ public class DefaultSessionService
     {
         String userId = UUIDUtils.randomStringId();
         StoredUser storedUser = new StoredUser();
-        ServiceUtils.copyUser( user, storedUser );
+        storedUser.copyFrom( user );
 
         storedUser.setUserId( userId );
         storedUser.setDomainName( config.getDomainName() );
@@ -128,12 +103,12 @@ public class DefaultSessionService
     @Transactional
     public UserSession getSession( String sessionId )
     {
-        StoredUserSession s = userSessionDao.pingSession( sessionId );
-        if ( s == null )
+        StoredUserSession session = userSessionDao.pingSession( sessionId );
+        if ( session == null )
         {
             return null;
         }
-        return createUserSession( s );
+        return session.toUserSession();
     }
 
     /**
@@ -148,7 +123,7 @@ public class DefaultSessionService
         {
             throw new IllegalStateException( "Session " + sessionId + " doesn't exist" );
         }
-        return createUserSession( session );
+        return session.toUserSession();
     }
 
     /**
@@ -238,15 +213,15 @@ public class DefaultSessionService
     {
         Validate.notNull( sessionId, "Session ID can't be NULL" );
 
-        StoredUserSession s = new StoredUserSession();
-        s.setSessionId( sessionId );
+        StoredUserSession session = new StoredUserSession();
+        session.setSessionId( sessionId );
         if ( attributes != null )
         {
-            s.setAcceptLanguage( attributes.getAcceptLanguage() );
-            s.setIpAddress( attributes.getIpAddress() );
-            s.setUserAgent( attributes.getUserAgent() );
+            session.setAcceptLanguage( attributes.getAcceptLanguage() );
+            session.setIpAddress( attributes.getIpAddress() );
+            session.setUserAgent( attributes.getUserAgent() );
         }
-        userSessionDao.createNew( s );
-        return createUserSession( s );
+        userSessionDao.createNew( session );
+        return session.toUserSession();
     }
 }

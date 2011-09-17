@@ -29,6 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultUserService
     implements UserService
 {
+    private static WebApplicationException exceptionOf( String message, Response.Status status )
+    {
+        String errorMessage = message + " (HTTP response status: " + status.getStatusCode() + ")";
+        Response error = Response.status( status ).entity( errorMessage ).build();
+        return new WebApplicationException( new RuntimeException( message ), error );
+    }
+
     private final UserDAO userDao;
 
     /**
@@ -67,13 +74,12 @@ public class DefaultUserService
     @Transactional( readOnly = true )
     public User get( String userName )
     {
-        StoredUser u = userDao.findNonPendingUser( userName );
-        if ( u == null )
+        StoredUser user = userDao.findNonPendingUser( userName );
+        if ( user == null )
         {
-            Response error = Response.status( Status.NOT_FOUND ).entity( "User " + userName + " not found" ).build();
-            throw new WebApplicationException( error );
+            throw exceptionOf( "User " + userName + " is not found", Response.Status.NOT_FOUND );
         }
-        return ServiceUtils.createUser( u );
+        return user.toUser();
     }
 
     /**
@@ -102,8 +108,8 @@ public class DefaultUserService
     @Transactional( readOnly = true )
     public UserOperationResult ping( String userName )
     {
-        StoredUser u = userDao.findNonPendingUser( userName );
-        if ( u == null )
+        StoredUser storedUser = userDao.findNonPendingUser( userName );
+        if ( storedUser == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
         }
@@ -117,13 +123,13 @@ public class DefaultUserService
     @Transactional
     public void update( String userName, User user )
     {
-        StoredUser u = userDao.findNonPendingUser( userName );
-        if ( u == null )
+        StoredUser storedUser = userDao.findNonPendingUser( userName );
+        if ( storedUser == null )
         {
             Response error = Response.status( Status.NOT_FOUND ).entity( "User " + userName + " not found" ).build();
             throw new WebApplicationException( error );
         }
-        ServiceUtils.copyUser( user, u );
-        userDao.saveUser( u );
+        storedUser.copyFrom( user );
+        userDao.saveUser( storedUser );
     }
 }
