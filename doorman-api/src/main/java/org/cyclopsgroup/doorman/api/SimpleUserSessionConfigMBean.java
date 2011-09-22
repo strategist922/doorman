@@ -1,6 +1,5 @@
 package org.cyclopsgroup.doorman.api;
 
-
 /**
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
@@ -16,4 +15,9 @@ public interface SimpleUserSessionConfigMBean
      * @param listener User session listeners
      */
     void setListener( UserEventListener listener );
+
+    /**
+     * @param strategy Name of strategy for password authentication
+     */
+    void setPasswordStrategy( String strategy );
 }

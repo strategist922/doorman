@@ -38,8 +38,6 @@ public class DefaultSessionService
 
     private final UserSessionConfig config;
 
-    private PasswordStrategy passwordStrategy = PasswordStrategy.MD5;
-
     private final UserDAO userDao;
 
     private final UserSessionDAO userSessionDao;
@@ -84,9 +82,10 @@ public class DefaultSessionService
         storedUser.setUserId( userId );
         storedUser.setDomainName( config.getDomainName() );
         storedUser.setUserType( UserType.LOCAL );
-        storedUser.setPasswordStrategy( passwordStrategy );
 
-        String storedPassword = passwordStrategy.encode( user.getPassword(), userId );
+        PasswordStrategy strategy = PasswordStrategy.valueOf( config.getPasswordStrategy() );
+        storedUser.setPasswordStrategy( strategy );
+        String storedPassword = strategy.encode( user.getPassword(), userId );
         storedUser.setPassword( storedPassword );
 
         DateTime now = new DateTime();

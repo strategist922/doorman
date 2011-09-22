@@ -27,6 +27,15 @@ public interface UserService
     UserOperationResult authenticate( String userName, String secureCredential );
 
     /**
+     * Set new credentials to a user. New credential will take effect immediately and previous becomes usable after call
+     * returns. This call is a set credentials call instead of credential rotation.
+     *
+     * @param userName Id or login nam eof user to set credentials for
+     * @param secureCredential New credential value
+     */
+    void changeCredential( String userName, String secureCredential );
+
+    /**
      * Get user based on ID
      *
      * @param userName Login name of user to get
