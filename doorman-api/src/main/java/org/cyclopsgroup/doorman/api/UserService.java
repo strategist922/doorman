@@ -27,15 +27,15 @@ public interface UserService
     UserOperationResult authenticate( String userName, String secureCredential );
 
     /**
-     * Change user password
+     * Set new credentials to a user. New credential will take effect immediately and previous becomes usable after call
+     * returns. This call is a set credentials call instead of credential rotation.
      *
-     * @param userId Id or name of user
-     * @param secureCredential New password
-     * @return Current user POJO
+     * @param userName Id or login nam eof user to set credentials for
+     * @param secureCredential New credential value
      */
     @PUT
     @Path( "/{userName}/password" )
-    User changeCredential( @PathParam( "userName" ) String userId, String secureCredential );
+    void changeCredential( @PathParam( "userName" ) String userName, String secureCredential );
 
     /**
      * Get user based on ID

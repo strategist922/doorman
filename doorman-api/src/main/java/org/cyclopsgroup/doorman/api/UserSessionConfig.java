@@ -1,6 +1,5 @@
 package org.cyclopsgroup.doorman.api;
 
-
 /**
  * Real time configuration used by user and session service
  *
@@ -17,4 +16,9 @@ public interface UserSessionConfig
      * @return User session listener
      */
     UserEventListener getListener();
+
+    /**
+     * @return Strategy for password comparison
+     */
+    String getPasswordStrategy();
 }

@@ -12,9 +12,11 @@ import org.cyclopsgroup.doorman.api.ListUserRequest;
 import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserOperationResult;
 import org.cyclopsgroup.doorman.api.UserService;
+import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.Users;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
 import org.cyclopsgroup.doorman.service.dao.UserDAO;
+import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,15 +38,19 @@ public class DefaultUserService
         return new WebApplicationException( new RuntimeException( message ), error );
     }
 
+    private final UserSessionConfig config;
+
     private final UserDAO userDao;
 
     /**
      * @param daoFactory DAO factory that creates DAOs
+     * @param config User session config
      */
     @Autowired
-    public DefaultUserService( DAOFactory daoFactory )
+    public DefaultUserService( DAOFactory daoFactory, UserSessionConfig config )
     {
         userDao = daoFactory.createUserDAO();
+        this.config = config;
     }
 
     /**
@@ -71,15 +77,35 @@ public class DefaultUserService
      * @inheritDoc
      */
     @Override
+    @Transactional
+    public void changeCredential( String userName, String secureCredential )
+    {
+        StoredUser user = getRequiredNonPendingUser( userName );
+        PasswordStrategy strategy = PasswordStrategy.valueOf( config.getPasswordStrategy() );
+        user.setPasswordStrategy( strategy );
+        String newPassword = strategy.encode( secureCredential, user.getUserId() );
+        user.setPassword( newPassword );
+        userDao.saveUser( user );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
     @Transactional( readOnly = true )
     public User get( String userName )
+    {
+        return getRequiredNonPendingUser( userName ).toUser();
+    }
+
+    private StoredUser getRequiredNonPendingUser( String userName )
     {
         StoredUser user = userDao.findNonPendingUser( userName );
         if ( user == null )
         {
             throw exceptionOf( "User " + userName + " is not found", Response.Status.NOT_FOUND );
         }
-        return user.toUser();
+        return user;
     }
 
     /**
