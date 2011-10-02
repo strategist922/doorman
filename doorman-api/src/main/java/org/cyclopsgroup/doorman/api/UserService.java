@@ -27,6 +27,17 @@ public interface UserService
     UserOperationResult authenticate( String userName, String secureCredential );
 
     /**
+     * Change user password
+     *
+     * @param userId Id or name of user
+     * @param secureCredential New password
+     * @return Current user POJO
+     */
+    @PUT
+    @Path( "/{userName}/password" )
+    User changeCredential( @PathParam( "userName" ) String userId, String secureCredential );
+
+    /**
      * Get user based on ID
      *
      * @param userName Login name of user to get
