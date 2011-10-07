@@ -23,9 +23,7 @@ import org.joda.time.DateTime;
 @Entity
 @Table( name = "dm_user", uniqueConstraints = { @UniqueConstraint( columnNames = { "user_name", "activation_token" } ),
     @UniqueConstraint( columnNames = { "email_address", "activation_token" } ) } )
-@NamedQueries( {
-    @NamedQuery( name = StoredUser.QUERY_BY_NAME_OR_ID, query = "FROM StoredUser WHERE (userName = :nameOrId OR userId = :nameOrId) AND userState <> 'PENDING'" ),
-    @NamedQuery( name = StoredUser.QUERY_BY_TOKEN, query = "FROM StoredUser WHERE activationToken= :token AND userState = 'PENDING'" ) } )
+@NamedQueries( { @NamedQuery( name = StoredUser.QUERY_BY_NAME_OR_ID, query = "FROM StoredUser WHERE (userName = :nameOrId OR userId = :nameOrId) AND userState <> 'PENDING'" ) } )
 @org.hibernate.annotations.Entity( dynamicUpdate = true )
 public class StoredUser
 {
@@ -33,11 +31,6 @@ public class StoredUser
      * Name of the query that looks for user based on given user name
      */
     public static final String QUERY_BY_NAME_OR_ID = "findNonPendingUserByNameOrId";
-
-    /**
-     * Name of query that looks for pending user with given activation token
-     */
-    public static final String QUERY_BY_TOKEN = "findPendingUserByToken";
 
     private String activationToken;
 

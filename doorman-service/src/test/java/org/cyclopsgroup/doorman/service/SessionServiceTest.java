@@ -83,7 +83,7 @@ public class SessionServiceTest
         UserSession s = service.getSession( id );
         assertNull( s.getUser() );
 
-        service.confirmSignUp( id, token );
+        service.confirmSignUp( id, user.getUserId(), token );
         s = service.getSession( id );
         user = s.getUser();
         assertNotNull( user );

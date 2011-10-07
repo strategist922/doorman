@@ -19,12 +19,14 @@ public interface SessionService
      * Confirm a sign up request with given token
      *
      * @param sessionId Current session ID
+     * @param userId Id of user to confirm
      * @param token Token to confirm
      * @return Opeation result
      */
     @POST
-    @Path( "/{sessionId}/confirm/{token}" )
-    UserOperationResult confirmSignUp( @PathParam( "sessionId" ) String sessionId, @PathParam( "token" ) String token );
+    @Path( "/{sessionId}/confirm/{userId}/{token}" )
+    UserOperationResult confirmSignUp( @PathParam( "sessionId" ) String sessionId,
+                                       @PathParam( "userId" ) String userId, @PathParam( "token" ) String token );
 
     /**
      * Get details of current session

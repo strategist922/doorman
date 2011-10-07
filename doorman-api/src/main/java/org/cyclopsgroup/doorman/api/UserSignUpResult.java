@@ -13,30 +13,9 @@ public class UserSignUpResult
 {
     private UserOperationResult result;
 
-    private User user;
-
-    /**
-     * The originally requested user
-     *
-     * @return User information
-     */
-    @XmlElement
-    public final User getUser()
-    {
-        return user;
-    }
-
-    /**
-     * Set user information
-     *
-     * @param user User information
-     */
-    public final void setUser( User user )
-    {
-        this.user = user;
-    }
-
     private String token;
+
+    private User user;
 
     /**
      * Default constructor called by JAXB
@@ -75,6 +54,17 @@ public class UserSignUpResult
     }
 
     /**
+     * The originally requested user
+     *
+     * @return User information
+     */
+    @XmlElement
+    public final User getUser()
+    {
+        return user;
+    }
+
+    /**
      * @param result {@link #getResult()}
      */
     public final void setResult( UserOperationResult result )
@@ -88,5 +78,15 @@ public class UserSignUpResult
     public final void setToken( String token )
     {
         this.token = token;
+    }
+
+    /**
+     * Set user information
+     *
+     * @param user User information
+     */
+    public final void setUser( User user )
+    {
+        this.user = user;
     }
 }

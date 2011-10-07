@@ -59,13 +59,18 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
-    public UserOperationResult confirmSignUp( String sessionId, String token )
+    public UserOperationResult confirmSignUp( String sessionId, String userId, String token )
     {
-        StoredUser user = userDao.findPendingUserWithToken( token );
+        StoredUser user = userDao.get( userId );
         if ( user == null )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
         }
+        if ( user.getUserState() != UserState.PENDING || !StringUtils.equals( token, user.getActivationToken() ) )
+        {
+            return UserOperationResult.AUTHENTICATION_FAILURE;
+        }
+
         user.setActivationToken( null );
         user.setUserState( UserState.ACTIVE );
         userDao.saveUser( user );
@@ -137,17 +142,16 @@ public class DefaultSessionService
         {
             return new UserSignUpResult( UserOperationResult.IDENTITY_EXISTED, user, null );
         }
-        StoredUser storaduser = createUserForSignUp( user );
-        String userId = storaduser.getUserId();
-        String token = UUIDUtils.randomStringId() + userId;
-
-        storaduser.setUserState( UserState.PENDING );
-        storaduser.setActivationToken( token );
-        userDao.saveUser( storaduser );
+        StoredUser storedUser = createUserForSignUp( user );
+        String userId = storedUser.getUserId();
+        storedUser.setUserState( UserState.PENDING );
+        storedUser.setActivationToken( UUIDUtils.randomStringId() );
+        userDao.saveUser( storedUser );
 
         LOG.info( "Sign up request " + userId + " is saved" );
         user.setUserId( userId );
-        UserSignUpResult result = new UserSignUpResult( UserOperationResult.SUCCESSFUL, user, token );
+        UserSignUpResult result =
+            new UserSignUpResult( UserOperationResult.SUCCESSFUL, user, storedUser.getActivationToken() );
         config.getListener().signUpRequested( sessionId, result );
         return result;
     }

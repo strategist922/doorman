@@ -38,10 +38,9 @@ class HibernateUserDAO
      * @inheritDoc
      */
     @Override
-    public StoredUser findPendingUserWithToken( String token )
+    public StoredUser get( String userId )
     {
-        Query findByToken = getSession( true ).getNamedQuery( StoredUser.QUERY_BY_TOKEN );
-        return (StoredUser) findByToken.setParameter( "token", token ).uniqueResult();
+        return (StoredUser) getHibernateTemplate().get( StoredUser.class, userId );
     }
 
     /**

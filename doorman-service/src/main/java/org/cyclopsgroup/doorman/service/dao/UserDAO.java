@@ -18,12 +18,12 @@ public interface UserDAO
     StoredUser findNonPendingUser( String nameOrId );
 
     /**
-     * Find pending user with given activation token
+     * Get a user with given userId
      *
-     * @param token Activation token
-     * @return User POJO or NULL if user is not found
+     * @param userId Given user Id
+     * @return Stored user POJO or null if user is not found
      */
-    StoredUser findPendingUserWithToken( String token );
+    StoredUser get( String userId );
 
     /**
      * @param user User to update
