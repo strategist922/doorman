@@ -39,6 +39,7 @@ public class UserSession
         other.setLastActivity( lastActivity );
         other.setLastVerification( lastVerification );
         other.setSessionId( sessionId );
+        other.setMobileDevice( mobileDevice );
         other.setUser( user );
     }
 
