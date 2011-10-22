@@ -21,6 +21,8 @@ public class UserSession
 
     private DateTime lastVerification;
 
+    private boolean mobileDevice;
+
     private String sessionId;
 
     private User user;
@@ -110,6 +112,17 @@ public class UserSession
     }
 
     /**
+     * Tell if session is on a mobile device
+     *
+     * @return True if session is on a mobile device
+     */
+    @XmlElement
+    public final boolean isMobileDevice()
+    {
+        return mobileDevice;
+    }
+
+    /**
      * @param attributes {@link #getAttributes()}
      */
     public final void setAttributes( UserSessionAttributes attributes )
@@ -139,6 +152,14 @@ public class UserSession
     public final void setLastVerification( DateTime lastVerification )
     {
         this.lastVerification = lastVerification;
+    }
+
+    /**
+     * @param mobileDevice {@link #isMobileDevice()}
+     */
+    public final void setMobileDevice( boolean mobileDevice )
+    {
+        this.mobileDevice = mobileDevice;
     }
 
     /**
