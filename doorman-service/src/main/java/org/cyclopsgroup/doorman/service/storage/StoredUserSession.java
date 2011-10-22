@@ -1,5 +1,7 @@
 package org.cyclopsgroup.doorman.service.storage;
 
+import java.util.regex.Pattern;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +25,9 @@ import org.joda.time.DateTime;
 @org.hibernate.annotations.Entity( dynamicUpdate = true )
 public class StoredUserSession
 {
+    private static final Pattern MOBILE_USER_AGENT =
+        Pattern.compile( "iphone|ipad|ipod|android|blackberry|mini|windows\\sce|palm" );
+
     private String acceptLanguage;
 
     private DateTime creationDate;
@@ -62,6 +67,8 @@ public class StoredUserSession
         {
             session.setUser( getUser().toUser() );
         }
+
+        session.setMobileDevice( MOBILE_USER_AGENT.matcher( userAgent.toLowerCase() ).find() );
         return session;
     }
 

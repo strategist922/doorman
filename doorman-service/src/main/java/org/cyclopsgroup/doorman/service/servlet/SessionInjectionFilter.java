@@ -2,7 +2,6 @@ package org.cyclopsgroup.doorman.service.servlet;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -38,9 +37,6 @@ import org.springframework.web.util.NestedServletException;
 public class SessionInjectionFilter
     implements Filter
 {
-    private static final Pattern MOBILE_USER_AGENT =
-        Pattern.compile( "iphone|ipad|ipod|android|blackberry|mini|windows\\sce|palm" );
-
     private static final String DEFAULT_CONTEXT_BEAN = "sessionInjectionFilterContext";
 
     private static final Log LOG = LogFactory.getLog( SessionInjectionFilter.class );
@@ -126,7 +122,6 @@ public class SessionInjectionFilter
             }
 
             session.setLastActivity( now ); // FIXME This value should come from database
-            session.setMobileDevice( MOBILE_USER_AGENT.matcher( userAgent.toLowerCase() ).find() );
             req.getSession().setAttribute( context.getSessionAttribute(), session );
             sessionIdCookie.setMaxAge( 7 * 24 * 3600 );
             ( (HttpServletResponse) response ).addCookie( sessionIdCookie );
