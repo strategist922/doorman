@@ -30,6 +30,8 @@ public class User
 
     private DateTime lastVisit;
 
+    private boolean openAuthOnly;
+
     private String password;
 
     private String timeZoneId;
@@ -153,6 +155,15 @@ public class User
     }
 
     /**
+     * @return True if user can only be authorized by third party through open auth
+     */
+    @XmlElement
+    public final boolean isOpenAuthOnly()
+    {
+        return openAuthOnly;
+    }
+
+    /**
      * @param countryCode {@link #getCountryCode()}
      */
     public final void setCountryCode( String countryCode )
@@ -206,6 +217,14 @@ public class User
     public void setLastVisit( DateTime lastVisit )
     {
         this.lastVisit = lastVisit;
+    }
+
+    /**
+     * @param openAuthOnly {@link #isOpenAuthOnly()}
+     */
+    public final void setOpenAuthOnly( boolean openAuthOnly )
+    {
+        this.openAuthOnly = openAuthOnly;
     }
 
     /**

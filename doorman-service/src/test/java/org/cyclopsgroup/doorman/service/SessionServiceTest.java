@@ -13,6 +13,7 @@ import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserService;
 import org.cyclopsgroup.doorman.api.UserSession;
 import org.cyclopsgroup.doorman.api.UserSessionAttributes;
+import org.cyclopsgroup.doorman.api.UserType;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
@@ -113,7 +114,7 @@ public class SessionServiceTest
         user.setLanguageCode( "en" );
         user.setTimeZoneId( TimeZone.getDefault().getID() );
 
-        service.signUp( id, user );
+        service.signUp( id, user, UserType.LOCAL );
 
         UserSession s = service.getSession( id );
         assertEquals( id + "@cyclopsgroup.org", s.getUser().getUserName() );

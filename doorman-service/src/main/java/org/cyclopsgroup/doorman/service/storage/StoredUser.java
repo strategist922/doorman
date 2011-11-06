@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.cyclopsgroup.doorman.api.User;
+import org.cyclopsgroup.doorman.api.UserType;
 import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -381,6 +382,7 @@ public class StoredUser
         user.setTimeZoneId( getTimeZoneId() );
         user.setUserId( getUserId() );
         user.setUserName( getUserName() );
+        user.setOpenAuthOnly( userType != UserType.LOCAL );
         return user;
     }
 }

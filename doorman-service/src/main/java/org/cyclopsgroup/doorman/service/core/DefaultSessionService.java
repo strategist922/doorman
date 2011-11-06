@@ -12,6 +12,7 @@ import org.cyclopsgroup.doorman.api.UserSession;
 import org.cyclopsgroup.doorman.api.UserSessionAttributes;
 import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.UserSignUpResult;
+import org.cyclopsgroup.doorman.api.UserType;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
 import org.cyclopsgroup.doorman.service.dao.UserDAO;
 import org.cyclopsgroup.doorman.service.dao.UserSessionDAO;
@@ -19,7 +20,6 @@ import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
 import org.cyclopsgroup.doorman.service.storage.UserState;
-import org.cyclopsgroup.doorman.service.storage.UserType;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,7 +78,7 @@ public class DefaultSessionService
         return UserOperationResult.SUCCESSFUL;
     }
 
-    private StoredUser createUserForSignUp( User user )
+    private StoredUser createUserForSignUp( User user, UserType type )
     {
         String userId = UUIDUtils.randomStringId();
         StoredUser storedUser = new StoredUser();
@@ -86,7 +86,7 @@ public class DefaultSessionService
 
         storedUser.setUserId( userId );
         storedUser.setDomainName( config.getDomainName() );
-        storedUser.setUserType( UserType.LOCAL );
+        storedUser.setUserType( type );
 
         PasswordStrategy strategy = PasswordStrategy.valueOf( config.getPasswordStrategy() );
         storedUser.setPasswordStrategy( strategy );
@@ -142,7 +142,7 @@ public class DefaultSessionService
         {
             return new UserSignUpResult( UserOperationResult.IDENTITY_EXISTED, user, null );
         }
-        StoredUser storedUser = createUserForSignUp( user );
+        StoredUser storedUser = createUserForSignUp( user, UserType.LOCAL );
         String userId = storedUser.getUserId();
         storedUser.setUserState( UserState.PENDING );
         storedUser.setActivationToken( UUIDUtils.randomStringId() );
@@ -181,6 +181,22 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
+    public UserOperationResult forceSignIn( String sessionId, String userName )
+    {
+        StoredUser user = userDao.findNonPendingUser( userName );
+        if ( user == null )
+        {
+            return UserOperationResult.NO_SUCH_IDENTITY;
+        }
+        userSessionDao.updateUser( sessionId, user );
+        return UserOperationResult.SUCCESSFUL;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @Transactional
     public UserOperationResult signOut( String sessionId )
     {
         userSessionDao.updateUser( sessionId, null );
@@ -192,14 +208,14 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
-    public UserOperationResult signUp( String sessionId, User user )
+    public UserOperationResult signUp( String sessionId, User user, UserType type )
     {
         StoredUser existing = userDao.findNonPendingUser( user.getUserName() );
         if ( existing != null )
         {
             return UserOperationResult.IDENTITY_EXISTED;
         }
-        StoredUser storedUser = createUserForSignUp( user );
+        StoredUser storedUser = createUserForSignUp( user, type == null ? UserType.LOCAL : type );
         storedUser.setUserState( UserState.ACTIVE );
 
         userDao.saveUser( storedUser );

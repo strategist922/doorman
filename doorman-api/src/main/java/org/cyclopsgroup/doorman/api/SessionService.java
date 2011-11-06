@@ -1,7 +1,9 @@
 package org.cyclopsgroup.doorman.api;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.MatrixParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -57,7 +59,7 @@ public interface SessionService
      * @return Sign up operation result
      */
     @POST
-    @Path( "/{sessionId}/user/request" )
+    @Path( "/{sessionId}/requestUser" )
     UserSignUpResult requestSignUp( @PathParam( "sessionId" ) String sessionId, User user );
 
     /**
@@ -69,9 +71,20 @@ public interface SessionService
      * @return Operation result
      */
     @POST
-    @Path( "/{sessionId}/user/signin" )
+    @Path( "/{sessionId}/signIn" )
     UserOperationResult signIn( @PathParam( "sessionId" ) String sessionId, @PathParam( "user" ) String user,
                                 @FormParam( "password" ) String password );
+
+    /**
+     * Force to sign in without credentials
+     *
+     * @param sessionId Current session ID
+     * @param userName Name of user to sign in
+     * @return Result
+     */
+    @POST
+    @Path( "/{sessionId}/forceSignIn" )
+    UserOperationResult forceSignIn( String sessionId, String userName );
 
     /**
      * Sign out from current session
@@ -80,7 +93,7 @@ public interface SessionService
      * @return Operation result
      */
     @POST
-    @Path( "/{sessionId}/user/signout" )
+    @Path( "/{sessionId}/signOut" )
     UserOperationResult signOut( @PathParam( "sessionId" ) String sessionId );
 
     /**
@@ -88,11 +101,13 @@ public interface SessionService
      *
      * @param sessionId Current user session Id
      * @param user User request to sign up
+     * @param type Type of user to sign up
      * @return Operation result
      */
     @POST
-    @Path( "/{sessionId}/user/signup" )
-    UserOperationResult signUp( @PathParam( "sessionId" ) String sessionId, User user );
+    @Path( "/{sessionId}/signUp" )
+    UserOperationResult signUp( @PathParam( "sessionId" ) String sessionId, User user,
+                                @MatrixParam( "type" ) @DefaultValue( "LOCAL" ) UserType type );
 
     /**
      * Start a new session with given ID
