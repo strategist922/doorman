@@ -13,11 +13,13 @@ import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserOperationResult;
 import org.cyclopsgroup.doorman.api.UserService;
 import org.cyclopsgroup.doorman.api.UserSessionConfig;
+import org.cyclopsgroup.doorman.api.UserType;
 import org.cyclopsgroup.doorman.api.Users;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
 import org.cyclopsgroup.doorman.service.dao.UserDAO;
 import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
+import org.cyclopsgroup.doorman.service.storage.UserState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +87,7 @@ public class DefaultUserService
         user.setPasswordStrategy( strategy );
         String newPassword = strategy.encode( secureCredential, user.getUserId() );
         user.setPassword( newPassword );
+        user.setUserType( UserType.LOCAL );
         userDao.saveUser( user );
     }
 
@@ -135,7 +138,7 @@ public class DefaultUserService
     public UserOperationResult ping( String userName )
     {
         StoredUser storedUser = userDao.findNonPendingUser( userName );
-        if ( storedUser == null )
+        if ( storedUser == null || storedUser.getUserState() == UserState.PENDING )
         {
             return UserOperationResult.NO_SUCH_IDENTITY;
         }
