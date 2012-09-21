@@ -10,7 +10,7 @@
 	<artifactId>doorman</artifactId>
 	<packaging>pom</packaging>
 	<name>Doorman</name>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<inceptionYear>2010</inceptionYear>
 	<scm>
 		<connection>scm:git:git@github.com:jiaqi/doorman.git</connection>
