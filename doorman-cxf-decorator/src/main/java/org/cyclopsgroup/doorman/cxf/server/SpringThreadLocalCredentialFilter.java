@@ -52,7 +52,7 @@ public class SpringThreadLocalCredentialFilter
             return;
         }
 
-        SessionCredential cred = CredentialUtils.credentialOf( header );
+        SessionCredential cred = CredentialUtils.credentialFrom( header );
         provider.attach( cred );
         try
         {

@@ -10,7 +10,7 @@ public class CredentialUtils
     {
     }
 
-    public static SessionCredential credentialOf( String string )
+    public static SessionCredential credentialFrom( String string )
     {
         int separatorIndex = string.indexOf( ':' );
         if ( separatorIndex == -1 )
