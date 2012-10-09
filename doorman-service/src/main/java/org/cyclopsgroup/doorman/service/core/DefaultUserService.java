@@ -21,7 +21,6 @@ import org.cyclopsgroup.doorman.service.security.PasswordStrategy;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.UserState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
-@Service
 public class DefaultUserService
     implements UserService
 {

@@ -22,7 +22,6 @@ import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
 import org.cyclopsgroup.doorman.service.storage.UserState;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
-@Service
 public class DefaultSessionService
     implements SessionService
 {
