@@ -35,7 +35,7 @@
     <bean
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location"
-            value="file:///home/jiaqi/local-test-db.properties" />
+            value="file://${user.home}/local-test-db.properties" />
     </bean>
     <bean id="doormanDataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="url" value="${db.url}" />
