@@ -1,9 +1,13 @@
 package org.cyclopsgroup.doorman.service.hibernate;
 
+import java.util.List;
+
 import org.cyclopsgroup.doorman.service.dao.UserSessionDAO;
 import org.cyclopsgroup.doorman.service.storage.StoredUser;
 import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -24,27 +28,9 @@ class HibernateUserSessionDAO
         setSessionFactory( sessionFactory );
     }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public StoredUserSession pingSession( String sessionId )
+    public void saveOrUpdate( StoredUserSession session )
     {
-        StoredUserSession session = (StoredUserSession) getHibernateTemplate().get( StoredUserSession.class, sessionId );
-        if ( session == null )
-        {
-            return null;
-        }
-
-        DateTime now = new DateTime();
-        session.setLastModified( now );
-        StoredUser user = session.getUser();
-        if ( user != null )
-        {
-            user.setLastVisit( now );
-        }
-        getHibernateTemplate().update( session );
-        return session;
+        getHibernateTemplate().saveOrUpdate( session );
     }
 
     /**
@@ -71,6 +57,43 @@ class HibernateUserSessionDAO
     public StoredUserSession findById( String sessionId )
     {
         return (StoredUserSession) getHibernateTemplate().get( StoredUserSession.class, sessionId );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @SuppressWarnings( "unchecked" )
+    @Override
+    public StoredUserSession findByTrace( String clientId, String traceNumber )
+    {
+        Criteria crit =
+            getSession( true ).createCriteria( StoredUserSession.class ).add( Restrictions.eq( "clientId", clientId ) ).add( Restrictions.eq( "traceNumber",
+                                                                                                                                              traceNumber ) );
+        List<StoredUserSession> results = (List<StoredUserSession>) crit.list();
+        return results.isEmpty() ? null : results.get( 0 );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public StoredUserSession pingSession( String sessionId )
+    {
+        StoredUserSession session = (StoredUserSession) getHibernateTemplate().get( StoredUserSession.class, sessionId );
+        if ( session == null )
+        {
+            return null;
+        }
+
+        DateTime now = new DateTime();
+        session.setLastModified( now );
+        StoredUser user = session.getUser();
+        if ( user != null )
+        {
+            user.setLastVisit( now );
+        }
+        getHibernateTemplate().update( session );
+        return session;
     }
 
     /**

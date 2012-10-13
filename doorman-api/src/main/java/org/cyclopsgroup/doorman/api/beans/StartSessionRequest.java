@@ -8,7 +8,7 @@ public class StartSessionRequest
 {
     private ClientDevice clientDevice;
 
-    private long traceNumber;
+    private String traceNumber;
 
     @XmlElement
     public final ClientDevice getClientDevice()
@@ -17,7 +17,7 @@ public class StartSessionRequest
     }
 
     @XmlElement
-    public final long getTraceNumber()
+    public final String getTraceNumber()
     {
         return traceNumber;
     }
@@ -27,7 +27,7 @@ public class StartSessionRequest
         this.clientDevice = clientDevice;
     }
 
-    public final void setTraceNumber( long traceNumber )
+    public final void setTraceNumber( String traceNumber )
     {
         this.traceNumber = traceNumber;
     }

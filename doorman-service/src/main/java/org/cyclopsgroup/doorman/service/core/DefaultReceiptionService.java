@@ -1,5 +1,11 @@
 package org.cyclopsgroup.doorman.service.core;
 
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
 import org.cyclopsgroup.doorman.api.ReceiptionService;
 import org.cyclopsgroup.doorman.api.SessionCredential;
@@ -20,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultReceiptionService
     implements ReceiptionService
 {
+    private static final Log LOG = LogFactory.getLog( DefaultReceiptionService.class );
+
     private UserSessionDAO sessionDao;
 
     @Autowired
@@ -35,22 +43,50 @@ public class DefaultReceiptionService
     @Transactional
     public StartSessionResponse startSession( String domain, StartSessionRequest request )
     {
-        StoredUserSession session = new StoredUserSession();
+        if ( request.getClientDevice() == null )
+        {
+            throw WebApplicationUtils.exceptionOf( "Client device is not described", Response.Status.BAD_REQUEST );
+        }
+        if ( StringUtils.isBlank( request.getClientDevice().getClientId() )
+            || StringUtils.isBlank( request.getTraceNumber() ) )
+        {
+            throw WebApplicationUtils.exceptionOf( "Client ID or Trace Number is missing", Response.Status.BAD_REQUEST );
+        }
+        StoredUserSession session =
+            sessionDao.findByTrace( request.getClientDevice().getClientId(), request.getTraceNumber() );
         DateTime now = new DateTime();
-        session.setCreationDate( now );
+        if ( session == null )
+        {
+            session = new StoredUserSession();
+            session.setSessionId( UUIDUtils.randomStringId() );
+            LOG.info( "Creating new session " + session.getSessionId() );
+            session.setClientId( request.getClientDevice().getClientId() );
+            session.setTraceNumber( request.getTraceNumber() );
+            session.setCreationDate( now );
+        }
+        else
+        {
+            LOG.info( "Update existing session " + session.getSessionId() );
+        }
         session.setIpAddress( request.getClientDevice().getNetworkLocation() );
+        session.setClientDeviceType( request.getClientDevice().getDeviceType() );
         session.setUserAgent( request.getClientDevice().getUserAgent() );
+        session.setLastModified( now );
 
-        String sessionId = UUIDUtils.randomStringId();
-        session.setSessionId( sessionId );
-        sessionDao.createNew( session );
+        sessionDao.saveOrUpdate( session );
 
         StartSessionResponse response = new StartSessionResponse();
         response.setMessage( "Session is created" );
 
         SessionCredential cred = new SessionCredential();
-        cred.setSessionId( sessionId );
+        cred.setSessionId( session.getSessionId() );
         response.setSessionCredential( cred );
         return response;
+    }
+
+    public static void main( String[] args )
+    {
+        ReceiptionService receiption = JAXRSClientFactory.create( "http://localhost:2080/v1/", ReceiptionService.class );
+        receiption.startSession( "test", new StartSessionRequest() );
     }
 }

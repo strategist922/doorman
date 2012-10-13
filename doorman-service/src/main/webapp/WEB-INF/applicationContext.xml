@@ -11,7 +11,7 @@
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
     <import
         resource="classpath:org/cyclopsgroup/doorman/mysql-hibernate-loader.xml" />
-    <jaxrs:server id="restServer" address="/">
+    <jaxrs:server id="restServer" address="/v1/">
         <jaxrs:serviceBeans>
             <ref bean="receiptionService" />
         </jaxrs:serviceBeans>

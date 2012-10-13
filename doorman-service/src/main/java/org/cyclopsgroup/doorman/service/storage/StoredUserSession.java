@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -12,6 +14,7 @@ import javax.persistence.Table;
 
 import org.cyclopsgroup.doorman.api.UserSession;
 import org.cyclopsgroup.doorman.api.UserSessionAttributes;
+import org.cyclopsgroup.doorman.api.beans.ClientDeviceType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -30,6 +33,10 @@ public class StoredUserSession
 
     private String acceptLanguage;
 
+    private ClientDeviceType clientDeviceType;
+
+    private String clientId;
+
     private DateTime creationDate;
 
     private String ipAddress;
@@ -40,37 +47,11 @@ public class StoredUserSession
 
     private String sessionId;
 
+    private String traceNumber;
+
     private StoredUser user;
 
     private String userAgent;
-
-    /**
-     * Create user session POJO for this session
-     *
-     * @return User session pojo instance
-     */
-    public UserSession toUserSession()
-    {
-        UserSession session = new UserSession();
-        session.setCreationDate( getCreationDate() );
-        session.setLastActivity( getLastModified() );
-        session.setSessionId( getSessionId() );
-
-        // Set attributes
-        UserSessionAttributes attributes = new UserSessionAttributes();
-        attributes.setAcceptLanguage( getAcceptLanguage() );
-        attributes.setIpAddress( getIpAddress() );
-        attributes.setUserAgent( getUserAgent() );
-        session.setAttributes( attributes );
-
-        if ( getUser() != null )
-        {
-            session.setUser( getUser().toUser() );
-        }
-
-        session.setMobileDevice( MOBILE_USER_AGENT.matcher( userAgent.toLowerCase() ).find() );
-        return session;
-    }
 
     /**
      * @return Accept language from browser
@@ -79,6 +60,19 @@ public class StoredUserSession
     public String getAcceptLanguage()
     {
         return acceptLanguage;
+    }
+
+    @Column( name = "client_device_type", length = 9, nullable = false )
+    @Enumerated( EnumType.STRING )
+    public ClientDeviceType getClientDeviceType()
+    {
+        return clientDeviceType;
+    }
+
+    @Column( name = "client_id", length = 256 )
+    public String getClientId()
+    {
+        return clientId;
     }
 
     /**
@@ -131,6 +125,12 @@ public class StoredUserSession
 
     }
 
+    @Column( name = "trace_number", length = 256 )
+    public String getTraceNumber()
+    {
+        return traceNumber;
+    }
+
     /**
      * @return {@link #getUser()}
      */
@@ -156,6 +156,16 @@ public class StoredUserSession
     public void setAcceptLanguage( String acceptLanguage )
     {
         this.acceptLanguage = acceptLanguage;
+    }
+
+    public void setClientDeviceType( ClientDeviceType clientDeviceType )
+    {
+        this.clientDeviceType = clientDeviceType;
+    }
+
+    public void setClientId( String clientId )
+    {
+        this.clientId = clientId;
     }
 
     /**
@@ -198,6 +208,11 @@ public class StoredUserSession
         this.sessionId = sessionId;
     }
 
+    public void setTraceNumber( String traceNumber )
+    {
+        this.traceNumber = traceNumber;
+    }
+
     /**
      * @param user {@link #getUser()}
      */
@@ -212,5 +227,33 @@ public class StoredUserSession
     public void setUserAgent( String userAgent )
     {
         this.userAgent = userAgent;
+    }
+
+    /**
+     * Create user session POJO for this session
+     *
+     * @return User session pojo instance
+     */
+    public UserSession toUserSession()
+    {
+        UserSession session = new UserSession();
+        session.setCreationDate( getCreationDate() );
+        session.setLastActivity( getLastModified() );
+        session.setSessionId( getSessionId() );
+
+        // Set attributes
+        UserSessionAttributes attributes = new UserSessionAttributes();
+        attributes.setAcceptLanguage( getAcceptLanguage() );
+        attributes.setIpAddress( getIpAddress() );
+        attributes.setUserAgent( getUserAgent() );
+        session.setAttributes( attributes );
+
+        if ( getUser() != null )
+        {
+            session.setUser( getUser().toUser() );
+        }
+
+        session.setMobileDevice( MOBILE_USER_AGENT.matcher( userAgent.toLowerCase() ).find() );
+        return session;
     }
 }

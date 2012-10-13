@@ -26,10 +26,22 @@ public interface UserSessionDAO
     StoredUserSession findById( String sessionId );
 
     /**
+     * Find existing user session based on trace number
+     *
+     * @param domain Domain of search
+     * @param clientId Identifier of client device
+     * @param traceNumber A trace number of request
+     * @return Existing user session or NULL
+     */
+    StoredUserSession findByTrace( String clientId, String traceNumber );
+
+    /**
      * @param sessionId ID of session to ping
      * @return The user session object it pings
      */
     StoredUserSession pingSession( String sessionId );
+
+    void saveOrUpdate( StoredUserSession session );
 
     /**
      * Update user session with given user
