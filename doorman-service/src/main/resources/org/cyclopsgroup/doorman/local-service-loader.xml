@@ -6,8 +6,11 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
-
-    <!-- MYSQL configuration for running instance -->
+    <bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location"
+            value="file://${user.home}/local-test-db.properties" />
+    </bean>
     <tx:annotation-driven transaction-manager="doormanTransactionManager"
         order="100" />
     <bean id="doormanTransactionManager"
@@ -23,27 +26,22 @@
         <property name="dataSource" ref="doormanDataSource" />
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">
-                    org.hibernate.dialect.MySQL5Dialect
-                </prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.connection.autocommit">false</prop>
                 <prop key="hibernate.connection.isolation">2</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
             </props>
         </property>
     </bean>
-    <bean
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location"
-            value="file://${user.home}/local-test-db.properties" />
-    </bean>
+
     <bean id="doormanDataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="url" value="${db.url}" />
         <property name="username" value="${db.username}" />
         <property name="password" value="${db.password}" />
         <property name="defaultAutoCommit" value="false" />
         <property name="defaultTransactionIsolation" value="2" />
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="driverClassName" value="${db.driver}" />
         <property name="maxActive" value="3" />
         <property name="maxIdle" value="3" />
     </bean>

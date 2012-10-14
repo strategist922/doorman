@@ -10,7 +10,7 @@
     <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
     <import
-        resource="classpath:org/cyclopsgroup/doorman/mysql-hibernate-loader.xml" />
+        resource="classpath:org/cyclopsgroup/doorman/local-service-loader.xml" />
     <jaxrs:server id="restServer" address="/v1/">
         <jaxrs:serviceBeans>
             <ref bean="receiptionService" />
