@@ -62,7 +62,7 @@ public class StoredUserSession
         return acceptLanguage;
     }
 
-    @Column( name = "client_device_type", length = 9, nullable = false )
+    @Column( name = "client_device_type", length = 8 )
     @Enumerated( EnumType.STRING )
     public ClientDeviceType getClientDeviceType()
     {

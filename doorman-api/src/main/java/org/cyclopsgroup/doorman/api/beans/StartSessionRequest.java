@@ -1,6 +1,5 @@
 package org.cyclopsgroup.doorman.api.beans;
 
-
 public class StartSessionRequest
 {
     private ClientDevice clientDevice;

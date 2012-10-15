@@ -5,9 +5,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
-import org.cyclopsgroup.doorman.api.ReceiptionService;
+import org.cyclopsgroup.doorman.api.ReceptionService;
 import org.cyclopsgroup.doorman.api.SessionCredential;
 import org.cyclopsgroup.doorman.api.beans.StartSessionRequest;
 import org.cyclopsgroup.doorman.api.beans.StartSessionResponse;
@@ -22,16 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Implementation of receiption service
  */
-@Service( "receiptionService" )
-public class DefaultReceiptionService
-    implements ReceiptionService
+@Service( "receptionService" )
+public class DefaultReceptionService
+    implements ReceptionService
 {
-    private static final Log LOG = LogFactory.getLog( DefaultReceiptionService.class );
+    private static final Log LOG = LogFactory.getLog( DefaultReceptionService.class );
 
     private UserSessionDAO sessionDao;
 
     @Autowired
-    public DefaultReceiptionService( DAOFactory daos )
+    public DefaultReceptionService( DAOFactory daos )
     {
         sessionDao = daos.createUserSessionDAO();
     }
@@ -82,11 +81,5 @@ public class DefaultReceiptionService
         cred.setSessionId( session.getSessionId() );
         response.setSessionCredential( cred );
         return response;
-    }
-
-    public static void main( String[] args )
-    {
-        ReceiptionService receiption = JAXRSClientFactory.create( "http://localhost:2080/v1/", ReceiptionService.class );
-        receiption.startSession( "test", new StartSessionRequest() );
     }
 }
