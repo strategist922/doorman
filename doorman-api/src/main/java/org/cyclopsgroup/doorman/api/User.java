@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.cyclopsgroup.doorman.api.types.XmlDateTimeAdapter;
 import org.joda.time.DateTime;
 
 /**

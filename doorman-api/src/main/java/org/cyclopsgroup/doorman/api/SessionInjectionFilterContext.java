@@ -2,6 +2,8 @@ package org.cyclopsgroup.doorman.api;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.cyclopsgroup.doorman.api.beans.UserSession;
+
 /**
  * Configuration for session injection filter
  *

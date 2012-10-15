@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
 import org.cyclopsgroup.doorman.api.ReceptionService;
-import org.cyclopsgroup.doorman.api.SessionCredential;
+import org.cyclopsgroup.doorman.api.beans.SessionCredential;
 import org.cyclopsgroup.doorman.api.beans.StartSessionRequest;
 import org.cyclopsgroup.doorman.api.beans.StartSessionResponse;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;

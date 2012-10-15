@@ -12,9 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.cyclopsgroup.doorman.api.UserSession;
-import org.cyclopsgroup.doorman.api.UserSessionAttributes;
 import org.cyclopsgroup.doorman.api.beans.ClientDeviceType;
+import org.cyclopsgroup.doorman.api.beans.UserSession;
+import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 

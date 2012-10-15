@@ -1,16 +1,11 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.api.beans;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * User attributes attached to session
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
-@XmlRootElement( name = "UserSessionAttributes" )
-@XmlType
 public class UserSessionAttributes
 {
     private String acceptLanguage;
@@ -22,7 +17,6 @@ public class UserSessionAttributes
     /**
      * @return Language accepted by client software
      */
-    @XmlElement
     public final String getAcceptLanguage()
     {
         return acceptLanguage;
@@ -31,7 +25,6 @@ public class UserSessionAttributes
     /**
      * @return IP address of client host
      */
-    @XmlElement
     public final String getIpAddress()
     {
         return ipAddress;
@@ -40,7 +33,6 @@ public class UserSessionAttributes
     /**
      * @return User agent of client software
      */
-    @XmlElement
     public final String getUserAgent()
     {
         return userAgent;

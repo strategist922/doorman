@@ -1,7 +1,8 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.api.beans;
 
 
 public class SessionCredential
+    extends BaseBean
 {
     private String sessionId;
 

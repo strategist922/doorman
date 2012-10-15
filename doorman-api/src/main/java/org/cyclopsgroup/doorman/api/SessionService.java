@@ -9,6 +9,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.cyclopsgroup.doorman.api.beans.UserSession;
+import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
+
 /**
  * The facade service that manages user authentication, session management and user management
  *

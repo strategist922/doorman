@@ -1,8 +1,7 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.api.beans;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import org.cyclopsgroup.doorman.api.UnauthenticatedError;
+import org.cyclopsgroup.doorman.api.User;
 import org.joda.time.DateTime;
 
 /**
@@ -10,10 +9,11 @@ import org.joda.time.DateTime;
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
-@XmlRootElement( name = "UserSession" )
 public class UserSession
 {
     private UserSessionAttributes attributes;
+
+    private ClientDevice clientDevice;
 
     private DateTime creationDate;
 
@@ -24,6 +24,8 @@ public class UserSession
     private boolean mobileDevice;
 
     private String sessionId;
+
+    private String traceNumber;
 
     private User user;
 
@@ -39,23 +41,25 @@ public class UserSession
         other.setLastActivity( lastActivity );
         other.setLastVerification( lastVerification );
         other.setSessionId( sessionId );
-        other.setMobileDevice( mobileDevice );
         other.setUser( user );
     }
 
     /**
      * @return Attributes attached to session
      */
-    @XmlElement
     public final UserSessionAttributes getAttributes()
     {
         return attributes;
     }
 
+    public final ClientDevice getClientDevice()
+    {
+        return clientDevice;
+    }
+
     /**
      * @return Immutable creation date of session
      */
-    @XmlElement
     public final DateTime getCreationDate()
     {
         return creationDate;
@@ -64,7 +68,6 @@ public class UserSession
     /**
      * @return Timestamp of last write operation of this session
      */
-    @XmlElement
     public final DateTime getLastActivity()
     {
         return lastActivity;
@@ -73,7 +76,6 @@ public class UserSession
     /**
      * @return Last time the session is authenticated with good credential
      */
-    @XmlElement
     public final DateTime getLastVerification()
     {
         return lastVerification;
@@ -97,27 +99,24 @@ public class UserSession
     /**
      * @return Id of this session
      */
-    @XmlElement
     public final String getSessionId()
     {
         return sessionId;
     }
 
+    public final String getTraceNumber()
+    {
+        return traceNumber;
+    }
+
     /**
      * @return Attached user of this session
      */
-    @XmlElement
     public final User getUser()
     {
         return user;
     }
 
-    /**
-     * Tell if session is on a mobile device
-     *
-     * @return True if session is on a mobile device
-     */
-    @XmlElement
     public final boolean isMobileDevice()
     {
         return mobileDevice;
@@ -129,6 +128,11 @@ public class UserSession
     public final void setAttributes( UserSessionAttributes attributes )
     {
         this.attributes = attributes;
+    }
+
+    public final void setClientDevice( ClientDevice clientDevice )
+    {
+        this.clientDevice = clientDevice;
     }
 
     /**
@@ -155,9 +159,6 @@ public class UserSession
         this.lastVerification = lastVerification;
     }
 
-    /**
-     * @param mobileDevice {@link #isMobileDevice()}
-     */
     public final void setMobileDevice( boolean mobileDevice )
     {
         this.mobileDevice = mobileDevice;
@@ -169,6 +170,11 @@ public class UserSession
     public final void setSessionId( String sessionId )
     {
         this.sessionId = sessionId;
+    }
+
+    public final void setTraceNumber( String traceNumber )
+    {
+        this.traceNumber = traceNumber;
     }
 
     /**

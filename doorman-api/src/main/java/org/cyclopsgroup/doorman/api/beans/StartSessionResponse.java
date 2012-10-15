@@ -1,8 +1,7 @@
 package org.cyclopsgroup.doorman.api.beans;
 
-import org.cyclopsgroup.doorman.api.SessionCredential;
-
 public class StartSessionResponse
+    extends BaseBean
 {
     private String message;
 

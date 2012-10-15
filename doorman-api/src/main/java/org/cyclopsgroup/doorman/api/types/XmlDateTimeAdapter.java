@@ -1,4 +1,4 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.api.types;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

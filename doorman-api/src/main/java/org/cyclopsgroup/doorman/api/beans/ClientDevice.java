@@ -1,7 +1,7 @@
 package org.cyclopsgroup.doorman.api.beans;
 
-
 public class ClientDevice
+    extends BaseBean
 {
     private String clientId;
 
