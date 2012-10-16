@@ -1,14 +1,19 @@
 package org.cyclopsgroup.doorman.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.MatrixParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import org.cyclopsgroup.doorman.api.beans.UserCredential;
+import org.cyclopsgroup.doorman.api.beans.UserLoginResponse;
+import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
 import org.cyclopsgroup.doorman.api.beans.UserSession;
 import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
 
@@ -30,8 +35,10 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/confirm/{userId}/{token}" )
-    UserOperationResult confirmSignUp( @PathParam( "sessionId" ) String sessionId,
-                                       @PathParam( "userId" ) String userId, @PathParam( "token" ) String token );
+    UserOperationResult confirmSignUp( @PathParam( "sessionId" )
+                                       String sessionId, @PathParam( "userId" )
+                                       String userId, @PathParam( "token" )
+                                       String token );
 
     /**
      * Get details of current session
@@ -41,7 +48,8 @@ public interface SessionService
      */
     @GET
     @Path( "/{sessionId}" )
-    UserSession getSession( @PathParam( "sessionId" ) String sessionId );
+    UserSession getSession( @PathParam( "sessionId" )
+                            String sessionId );
 
     /**
      * Update existing session
@@ -51,7 +59,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/ping" )
-    UserSession pingSession( @PathParam( "sessionId" ) String sessionId );
+    UserSession pingSession( @PathParam( "sessionId" )
+                             String sessionId );
 
     /**
      * Create request for new user sign up. Request needs to be confirmed, {@link #confirmSignUp(String, String)},
@@ -63,7 +72,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/requestUser" )
-    UserSignUpResult requestSignUp( @PathParam( "sessionId" ) String sessionId, User user );
+    UserSignUpResult requestSignUp( @PathParam( "sessionId" )
+                                    String sessionId, User user );
 
     /**
      * Sign in and associated user with current session
@@ -74,9 +84,11 @@ public interface SessionService
      * @return Operation result
      */
     @POST
-    @Path( "/{sessionId}/signIn" )
-    UserOperationResult signIn( @PathParam( "sessionId" ) String sessionId, @PathParam( "user" ) String user,
-                                @FormParam( "password" ) String password );
+    @Path( "/{sessionId}/login" )
+    @Consumes( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.APPLICATION_JSON )
+    UserLoginResponse login( @PathParam( "sessionId" )
+                             String sessionId, UserCredential credential );
 
     /**
      * Force to sign in without credentials
@@ -97,7 +109,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/signOut" )
-    UserOperationResult signOut( @PathParam( "sessionId" ) String sessionId );
+    UserOperationResult signOut( @PathParam( "sessionId" )
+                                 String sessionId );
 
     /**
      * Sign up new user directly with request/confirm process
@@ -109,8 +122,10 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/signUp" )
-    UserOperationResult signUp( @PathParam( "sessionId" ) String sessionId, User user,
-                                @MatrixParam( "type" ) @DefaultValue( "LOCAL" ) UserType type );
+    UserOperationResult signUp( @PathParam( "sessionId" )
+                                String sessionId, User user, @MatrixParam( "type" )
+                                @DefaultValue( "LOCAL" )
+                                UserType type );
 
     /**
      * Start a new session with given ID
@@ -121,5 +136,6 @@ public interface SessionService
      */
     @PUT
     @Path( "/{sessionId}" )
-    UserSession startSession( @PathParam( "sessionId" ) String sessionId, UserSessionAttributes attributes );
+    UserSession startSession( @PathParam( "sessionId" )
+                              String sessionId, UserSessionAttributes attributes );
 }

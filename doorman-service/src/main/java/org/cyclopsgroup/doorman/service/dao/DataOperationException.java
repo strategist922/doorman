@@ -1,6 +1,6 @@
 package org.cyclopsgroup.doorman.service.dao;
 
-import org.cyclopsgroup.doorman.api.UserOperationResult;
+import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
 
 /**
  * An runtime exception that indicates operation fails for known reason and expected result should be returned

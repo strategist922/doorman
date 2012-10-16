@@ -7,10 +7,12 @@ import org.apache.commons.logging.LogFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
 import org.cyclopsgroup.doorman.api.SessionService;
 import org.cyclopsgroup.doorman.api.User;
-import org.cyclopsgroup.doorman.api.UserOperationResult;
 import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.UserSignUpResult;
 import org.cyclopsgroup.doorman.api.UserType;
+import org.cyclopsgroup.doorman.api.beans.UserCredential;
+import org.cyclopsgroup.doorman.api.beans.UserLoginResponse;
+import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
 import org.cyclopsgroup.doorman.api.beans.UserSession;
 import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
@@ -159,19 +161,20 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
-    public UserOperationResult signIn( String sessionId, String userName, String password )
+    public UserLoginResponse login( String sessionId, UserCredential cred )
     {
-        StoredUser user = userDao.findNonPendingUser( userName );
+        StoredUser user = userDao.findNonPendingUser( cred.getUserName() );
         if ( user == null )
         {
-            return UserOperationResult.NO_SUCH_IDENTITY;
+            return new UserLoginResponse( UserOperationResult.NO_SUCH_IDENTITY );
         }
-        if ( !StringUtils.equals( user.getPasswordStrategy().encode( password, user.getUserId() ), user.getPassword() ) )
+        if ( !StringUtils.equals( user.getPasswordStrategy().encode( cred.getPassword(), user.getUserId() ),
+                                  user.getPassword() ) )
         {
-            return UserOperationResult.AUTHENTICATION_FAILURE;
+            return new UserLoginResponse( UserOperationResult.AUTHENTICATION_FAILURE );
         }
         userSessionDao.updateUser( sessionId, user );
-        return UserOperationResult.SUCCESSFUL;
+        return new UserLoginResponse( UserOperationResult.SUCCESSFUL );
     }
 
     /**

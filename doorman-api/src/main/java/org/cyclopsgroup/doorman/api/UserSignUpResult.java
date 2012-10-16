@@ -3,6 +3,8 @@ package org.cyclopsgroup.doorman.api;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
+
 /**
  * Response of sign up operation
  *

@@ -1,4 +1,4 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.api.beans;
 
 /**
  * Enumeration of possible user and session operation results
