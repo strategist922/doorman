@@ -47,6 +47,8 @@ public class StoredUserSession
 
     private String sessionId;
 
+    private String sessionSecret;
+
     private String traceNumber;
 
     private StoredUser user;
@@ -123,6 +125,12 @@ public class StoredUserSession
     {
         return sessionId;
 
+    }
+
+    @Column( name = "session_secret", length = 128 )
+    public String getSessionSecret()
+    {
+        return sessionSecret;
     }
 
     @Column( name = "trace_number", length = 256 )
@@ -206,6 +214,11 @@ public class StoredUserSession
     public void setSessionId( String sessionId )
     {
         this.sessionId = sessionId;
+    }
+
+    public void setSessionSecret( String sessionSecret )
+    {
+        this.sessionSecret = sessionSecret;
     }
 
     public void setTraceNumber( String traceNumber )

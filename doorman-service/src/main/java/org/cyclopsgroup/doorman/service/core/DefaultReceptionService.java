@@ -2,6 +2,7 @@ package org.cyclopsgroup.doorman.service.core;
 
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +55,7 @@ public class DefaultReceptionService
         StoredUserSession session =
             sessionDao.findByTrace( request.getClientDevice().getClientId(), request.getTraceNumber() );
         DateTime now = new DateTime();
+        String sessionSecret;
         if ( session == null )
         {
             session = new StoredUserSession();
@@ -62,10 +64,14 @@ public class DefaultReceptionService
             session.setClientId( request.getClientDevice().getClientId() );
             session.setTraceNumber( request.getTraceNumber() );
             session.setCreationDate( now );
+
+            sessionSecret = RandomStringUtils.randomAlphabetic( 64 );
+            session.setSessionSecret( sessionSecret );
         }
         else
         {
             LOG.info( "Update existing session " + session.getSessionId() );
+            sessionSecret = session.getSessionSecret();
         }
         session.setIpAddress( request.getClientDevice().getNetworkLocation() );
         session.setClientDeviceType( request.getClientDevice().getDeviceType() );
@@ -77,8 +83,7 @@ public class DefaultReceptionService
         StartSessionResponse response = new StartSessionResponse();
         response.setMessage( "Session is created" );
 
-        SessionCredential cred = new SessionCredential();
-        cred.setSessionId( session.getSessionId() );
+        SessionCredential cred = new SessionCredential( session.getSessionId(), sessionSecret );
         response.setSessionCredential( cred );
         return response;
     }

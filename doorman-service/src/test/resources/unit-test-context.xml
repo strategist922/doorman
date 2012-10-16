@@ -1,40 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
        http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
-    ">
-
-	<!-- Following HSQLDB implementation is defined for testing purpose only -->
-	<tx:annotation-driven transaction-manager="org.cyclopsgroup.doorman.TransactionManager" />
-
-	<bean id="org.cyclopsgroup.doorman.TransactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<property name="sessionFactory" ref="org.cyclopsgroup.doorman.HSQLSessionFactory" />
-	</bean>
-	<bean id="org.cyclopsgroup.doorman.HSQLSessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="packagesToScan" value="org.cyclopsgroup.doorman.service.storage" />
-		<property name="annotatedPackages" value="org.cyclopsgroup.doorman.service.storage" />
-		<property name="dataSource" ref="org.cyclopsgroup.doorman.HSQLDataSource" />
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-			</props>
-		</property>
-	</bean>
-	<bean id="org.cyclopsgroup.doorman.HSQLDataSource" class="org.hsqldb.jdbc.JDBCDataSource">
-		<property name="database" value="jdbc:hsqldb:mem:doorman" />
-		<property name="user" value="sa" />
-		<property name="password" value="sa" />
-	</bean>
-
-	<bean class="org.cyclopsgroup.doorman.api.SimpleUserSessionConfig" />
-	<alias name="org.cyclopsgroup.doorman.TransactionManager" alias="transactionManager" />
-	<import resource="classpath:org/cyclopsgroup/doorman/core-service.xml" />
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location"
+            value="classpath:org/cyclopsgroup/doorman/memory-hsql-db.properties" />
+    </bean>
+    <bean class="org.cyclopsgroup.doorman.api.SimpleUserSessionConfig" />
+    <alias name="doormanTransactionManager" alias="transactionManager" />
+    <import resource="classpath:org/cyclopsgroup/doorman/core-service.xml" />
 </beans>
