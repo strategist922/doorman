@@ -1,7 +1,7 @@
 package org.cyclopsgroup.doorman.cxf.server;
 
-import org.cyclopsgroup.doorman.api.SessionCredential;
 import org.cyclopsgroup.doorman.api.SessionCredentialProvider;
+import org.cyclopsgroup.doorman.api.beans.SessionCredential;
 
 public class ThreadLocalCredentialProvider
     implements SessionCredentialProvider

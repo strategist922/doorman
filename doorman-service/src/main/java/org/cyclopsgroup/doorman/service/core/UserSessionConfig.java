@@ -1,4 +1,6 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.service.core;
+
+import org.cyclopsgroup.doorman.api.UserEventListener;
 
 /**
  * Real time configuration used by user and session service

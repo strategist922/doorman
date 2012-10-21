@@ -6,8 +6,8 @@ import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
-import org.cyclopsgroup.doorman.api.SessionCredential;
 import org.cyclopsgroup.doorman.api.SessionCredentialProvider;
+import org.cyclopsgroup.doorman.api.beans.SessionCredential;
 import org.cyclopsgroup.doorman.cxf.CredentialUtils;
 
 public class CredentialInjectionInterceptor
@@ -33,7 +33,7 @@ public class CredentialInjectionInterceptor
             return;
         }
         MultivaluedMap<String, String> headers = new MetadataMap<String, String>();
-        headers.add( CredentialUtils.HTTP_HEADER_NAME, CredentialUtils.toString( credential ) );
+        headers.add( SessionCredentialProvider.SESSION_CREDENTIAL_HEADER, CredentialUtils.toString( credential ) );
         message.put( Message.PROTOCOL_HEADERS, headers );
     }
 }

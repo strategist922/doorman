@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cyclopsgroup.doorman.api.SessionCredential;
+import org.cyclopsgroup.doorman.api.SessionCredentialProvider;
+import org.cyclopsgroup.doorman.api.beans.SessionCredential;
 import org.cyclopsgroup.doorman.cxf.CredentialUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -44,10 +45,10 @@ public class SpringThreadLocalCredentialFilter
         throws IOException, ServletException
     {
         HttpServletRequest request = (HttpServletRequest) req;
-        String header = request.getHeader( CredentialUtils.HTTP_HEADER_NAME );
+        String header = request.getHeader( SessionCredentialProvider.SESSION_CREDENTIAL_HEADER );
         if ( header == null )
         {
-            LOG.warn( "HTTP header " + CredentialUtils.HTTP_HEADER_NAME + " is not specified" );
+            LOG.warn( "HTTP header " + SessionCredentialProvider.SESSION_CREDENTIAL_HEADER + " is not specified" );
             chain.doFilter( req, res );
             return;
         }

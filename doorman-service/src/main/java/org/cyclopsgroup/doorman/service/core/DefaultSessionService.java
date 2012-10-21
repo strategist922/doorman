@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
 import org.cyclopsgroup.doorman.api.SessionService;
 import org.cyclopsgroup.doorman.api.User;
-import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.UserSignUpResult;
 import org.cyclopsgroup.doorman.api.UserType;
 import org.cyclopsgroup.doorman.api.beans.UserCredential;
@@ -24,6 +23,7 @@ import org.cyclopsgroup.doorman.service.storage.StoredUserSession;
 import org.cyclopsgroup.doorman.service.storage.UserState;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
+@Service( "sessionService" )
 public class DefaultSessionService
     implements SessionService
 {
@@ -105,6 +106,22 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
+    public UserOperationResult forceSignIn( String sessionId, String userName )
+    {
+        StoredUser user = userDao.findNonPendingUser( userName );
+        if ( user == null )
+        {
+            return UserOperationResult.NO_SUCH_IDENTITY;
+        }
+        userSessionDao.updateUser( sessionId, user );
+        return UserOperationResult.SUCCESSFUL;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @Transactional
     public UserSession getSession( String sessionId )
     {
         StoredUserSession session = userSessionDao.pingSession( sessionId );
@@ -113,6 +130,27 @@ public class DefaultSessionService
             return null;
         }
         return session.toUserSession();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @Transactional
+    public UserLoginResponse login( String sessionId, UserCredential cred )
+    {
+        StoredUser user = userDao.findNonPendingUser( cred.getUserName() );
+        if ( user == null )
+        {
+            return new UserLoginResponse( UserOperationResult.NO_SUCH_IDENTITY );
+        }
+        if ( !StringUtils.equals( user.getPasswordStrategy().encode( cred.getPassword(), user.getUserId() ),
+                                  user.getPassword() ) )
+        {
+            return new UserLoginResponse( UserOperationResult.AUTHENTICATION_FAILURE );
+        }
+        userSessionDao.updateUser( sessionId, user );
+        return new UserLoginResponse( UserOperationResult.SUCCESSFUL );
     }
 
     /**
@@ -154,43 +192,6 @@ public class DefaultSessionService
             new UserSignUpResult( UserOperationResult.SUCCESSFUL, user, storedUser.getActivationToken() );
         config.getListener().signUpRequested( sessionId, result );
         return result;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    @Transactional
-    public UserLoginResponse login( String sessionId, UserCredential cred )
-    {
-        StoredUser user = userDao.findNonPendingUser( cred.getUserName() );
-        if ( user == null )
-        {
-            return new UserLoginResponse( UserOperationResult.NO_SUCH_IDENTITY );
-        }
-        if ( !StringUtils.equals( user.getPasswordStrategy().encode( cred.getPassword(), user.getUserId() ),
-                                  user.getPassword() ) )
-        {
-            return new UserLoginResponse( UserOperationResult.AUTHENTICATION_FAILURE );
-        }
-        userSessionDao.updateUser( sessionId, user );
-        return new UserLoginResponse( UserOperationResult.SUCCESSFUL );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    @Transactional
-    public UserOperationResult forceSignIn( String sessionId, String userName )
-    {
-        StoredUser user = userDao.findNonPendingUser( userName );
-        if ( user == null )
-        {
-            return UserOperationResult.NO_SUCH_IDENTITY;
-        }
-        userSessionDao.updateUser( sessionId, user );
-        return UserOperationResult.SUCCESSFUL;
     }
 
     /**

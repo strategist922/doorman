@@ -50,4 +50,9 @@
         <property name="maxActive" value="3" />
         <property name="maxIdle" value="3" />
     </bean>
+
+    <bean
+        class="org.cyclopsgroup.doorman.service.core.SimpleUserSessionConfig">
+        <property name="domainName" value="${service.domain}" />
+    </bean>
 </beans>

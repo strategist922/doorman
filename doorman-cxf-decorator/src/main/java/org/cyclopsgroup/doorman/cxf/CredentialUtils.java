@@ -1,11 +1,9 @@
 package org.cyclopsgroup.doorman.cxf;
 
-import org.cyclopsgroup.doorman.api.SessionCredential;
+import org.cyclopsgroup.doorman.api.beans.SessionCredential;
 
 public class CredentialUtils
 {
-    public static final String HTTP_HEADER_NAME = "X-SessionCredential";
-
     private CredentialUtils()
     {
     }

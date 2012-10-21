@@ -7,6 +7,8 @@ import org.cyclopsgroup.doorman.api.beans.SessionCredential;
  */
 public interface SessionCredentialProvider
 {
+    String SESSION_CREDENTIAL_HEADER = "X-SessionCredential";
+
     /**
      * @return Session credential attached to current context
      */

@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.cyclopsgroup.doorman.api.ListUserRequest;
 import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserService;
-import org.cyclopsgroup.doorman.api.UserSessionConfig;
 import org.cyclopsgroup.doorman.api.UserType;
 import org.cyclopsgroup.doorman.api.Users;
 import org.cyclopsgroup.doorman.api.beans.UserOperationResult;

@@ -1,4 +1,7 @@
-package org.cyclopsgroup.doorman.api;
+package org.cyclopsgroup.doorman.service.core;
+
+import org.cyclopsgroup.doorman.api.AbstractUserEventListener;
+import org.cyclopsgroup.doorman.api.UserEventListener;
 
 /**
  * Real time configuration for user and session service implementations
@@ -6,7 +9,7 @@ package org.cyclopsgroup.doorman.api;
  * @author <a href="mailto:jiaqi@cyclopsgroup.org">Jiaqi Guo</a>
  */
 public class SimpleUserSessionConfig
-    implements UserSessionConfig, SimpleUserSessionConfigMBean
+    implements UserSessionConfig
 {
     private static final String DEFAULT_DOMAIN_NAME = "default";
 
@@ -49,28 +52,16 @@ public class SimpleUserSessionConfig
         return passwordStrategy;
     }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
     public final void setDomainName( String domainName )
     {
         this.domainName = domainName;
     }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
     public final void setListener( UserEventListener listener )
     {
         this.listener = listener;
     }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
     public void setPasswordStrategy( String strategy )
     {
         this.passwordStrategy = strategy;

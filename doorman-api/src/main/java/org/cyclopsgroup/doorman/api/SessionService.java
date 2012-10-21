@@ -41,6 +41,17 @@ public interface SessionService
                                        String token );
 
     /**
+     * Force to sign in without credentials
+     *
+     * @param sessionId Current session ID
+     * @param userName Name of user to sign in
+     * @return Result
+     */
+    @POST
+    @Path( "/{sessionId}/forceSignIn" )
+    UserOperationResult forceSignIn( String sessionId, String userName );
+
+    /**
      * Get details of current session
      *
      * @param sessionId Id of current session
@@ -50,6 +61,21 @@ public interface SessionService
     @Path( "/{sessionId}" )
     UserSession getSession( @PathParam( "sessionId" )
                             String sessionId );
+
+    /**
+     * Sign in and associated user with current session
+     *
+     * @param sessionId Id of current session
+     * @param user User to sign in
+     * @param password Password for authentication
+     * @return Operation result
+     */
+    @POST
+    @Path( "/{sessionId}/login" )
+    @Consumes( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.APPLICATION_JSON )
+    UserLoginResponse login( @PathParam( "sessionId" )
+                             String sessionId, UserCredential credential );
 
     /**
      * Update existing session
@@ -74,32 +100,6 @@ public interface SessionService
     @Path( "/{sessionId}/requestUser" )
     UserSignUpResult requestSignUp( @PathParam( "sessionId" )
                                     String sessionId, User user );
-
-    /**
-     * Sign in and associated user with current session
-     *
-     * @param sessionId Id of current session
-     * @param user User to sign in
-     * @param password Password for authentication
-     * @return Operation result
-     */
-    @POST
-    @Path( "/{sessionId}/login" )
-    @Consumes( MediaType.APPLICATION_JSON )
-    @Produces( MediaType.APPLICATION_JSON )
-    UserLoginResponse login( @PathParam( "sessionId" )
-                             String sessionId, UserCredential credential );
-
-    /**
-     * Force to sign in without credentials
-     *
-     * @param sessionId Current session ID
-     * @param userName Name of user to sign in
-     * @return Result
-     */
-    @POST
-    @Path( "/{sessionId}/forceSignIn" )
-    UserOperationResult forceSignIn( String sessionId, String userName );
 
     /**
      * Sign out from current session

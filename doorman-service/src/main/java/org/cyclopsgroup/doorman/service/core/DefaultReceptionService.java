@@ -9,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.cyclopsgroup.caff.util.UUIDUtils;
 import org.cyclopsgroup.doorman.api.ReceptionService;
 import org.cyclopsgroup.doorman.api.beans.SessionCredential;
+import org.cyclopsgroup.doorman.api.beans.SessionState;
+import org.cyclopsgroup.doorman.api.beans.SessionVerificationResponse;
 import org.cyclopsgroup.doorman.api.beans.StartSessionRequest;
 import org.cyclopsgroup.doorman.api.beans.StartSessionResponse;
 import org.cyclopsgroup.doorman.service.dao.DAOFactory;
@@ -86,5 +88,24 @@ public class DefaultReceptionService
         SessionCredential cred = new SessionCredential( session.getSessionId(), sessionSecret );
         response.setSessionCredential( cred );
         return response;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @Transactional( readOnly = true )
+    public SessionVerificationResponse verifySession( String domain, SessionCredential credential )
+    {
+        StoredUserSession session = sessionDao.findById( credential.getSessionId() );
+        if ( session == null )
+        {
+            return new SessionVerificationResponse( SessionState.GONE, null );
+        }
+        if ( !StringUtils.equals( session.getSessionSecret(), credential.getSessionSecret() ) )
+        {
+            return new SessionVerificationResponse( SessionState.FAILED, null );
+        }
+        return new SessionVerificationResponse( SessionState.LIVE, new DateTime().plusDays( 7 ) );
     }
 }
