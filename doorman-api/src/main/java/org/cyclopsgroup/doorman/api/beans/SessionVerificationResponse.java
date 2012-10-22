@@ -9,6 +9,10 @@ public class SessionVerificationResponse
 
     private SessionState sessionState;
 
+    private String userId;
+
+    private String userName;
+
     public SessionVerificationResponse()
     {
 
@@ -30,6 +34,16 @@ public class SessionVerificationResponse
         return sessionState;
     }
 
+    public final String getUserId()
+    {
+        return userId;
+    }
+
+    public final String getUserName()
+    {
+        return userName;
+    }
+
     public final void setExpiresAt( DateTime expiresAt )
     {
         this.expiresAt = expiresAt;
@@ -38,5 +52,15 @@ public class SessionVerificationResponse
     public final void setSessionState( SessionState sessionState )
     {
         this.sessionState = sessionState;
+    }
+
+    public final void setUserId( String userId )
+    {
+        this.userId = userId;
+    }
+
+    public final void setUserName( String userName )
+    {
+        this.userName = userName;
     }
 }

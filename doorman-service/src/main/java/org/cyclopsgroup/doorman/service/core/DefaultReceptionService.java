@@ -106,6 +106,13 @@ public class DefaultReceptionService
         {
             return new SessionVerificationResponse( SessionState.FAILED, null );
         }
-        return new SessionVerificationResponse( SessionState.LIVE, new DateTime().plusDays( 7 ) );
+        SessionVerificationResponse response =
+            new SessionVerificationResponse( SessionState.LIVE, new DateTime().plusDays( 7 ) );
+        if ( session.getUser() != null )
+        {
+            response.setUserId( session.getUser().getUserId() );
+            response.setUserName( session.getUser().getUserName() );
+        }
+        return response;
     }
 }

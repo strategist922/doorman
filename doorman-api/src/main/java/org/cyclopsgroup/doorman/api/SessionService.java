@@ -35,6 +35,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/confirm/{userId}/{token}" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN )
     UserOperationResult confirmSignUp( @PathParam( "sessionId" )
                                        String sessionId, @PathParam( "userId" )
                                        String userId, @PathParam( "token" )
@@ -49,7 +51,10 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/forceSignIn" )
-    UserOperationResult forceSignIn( String sessionId, String userName );
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN )
+    UserOperationResult forceSignIn( @PathParam( "sessionId" )
+                                     String sessionId, String userName );
 
     /**
      * Get details of current session
@@ -59,6 +64,8 @@ public interface SessionService
      */
     @GET
     @Path( "/{sessionId}" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.APPLICATION_JSON )
     UserSession getSession( @PathParam( "sessionId" )
                             String sessionId );
 
@@ -85,6 +92,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/ping" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN )
     UserSession pingSession( @PathParam( "sessionId" )
                              String sessionId );
 
@@ -98,6 +107,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/requestUser" )
+    @Consumes( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.TEXT_PLAIN )
     UserSignUpResult requestSignUp( @PathParam( "sessionId" )
                                     String sessionId, User user );
 
@@ -109,6 +120,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/signOut" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN )
     UserOperationResult signOut( @PathParam( "sessionId" )
                                  String sessionId );
 
@@ -122,6 +135,8 @@ public interface SessionService
      */
     @POST
     @Path( "/{sessionId}/signUp" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.TEXT_PLAIN )
     UserOperationResult signUp( @PathParam( "sessionId" )
                                 String sessionId, User user, @MatrixParam( "type" )
                                 @DefaultValue( "LOCAL" )
@@ -136,6 +151,8 @@ public interface SessionService
      */
     @PUT
     @Path( "/{sessionId}" )
+    @Consumes( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.APPLICATION_JSON )
     UserSession startSession( @PathParam( "sessionId" )
                               String sessionId, UserSessionAttributes attributes );
 }
