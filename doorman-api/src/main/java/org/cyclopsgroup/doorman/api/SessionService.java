@@ -11,8 +11,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.cyclopsgroup.doorman.api.beans.LoginResponse;
 import org.cyclopsgroup.doorman.api.beans.UserCredential;
-import org.cyclopsgroup.doorman.api.beans.UserLoginResponse;
+import org.cyclopsgroup.doorman.api.beans.UserOperationResponse;
 import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
 import org.cyclopsgroup.doorman.api.beans.UserSession;
 import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
@@ -81,8 +82,8 @@ public interface SessionService
     @Path( "/{sessionId}/login" )
     @Consumes( MediaType.APPLICATION_JSON )
     @Produces( MediaType.APPLICATION_JSON )
-    UserLoginResponse login( @PathParam( "sessionId" )
-                             String sessionId, UserCredential credential );
+    LoginResponse login( @PathParam( "sessionId" )
+                         String sessionId, UserCredential credential );
 
     /**
      * Update existing session
@@ -119,11 +120,11 @@ public interface SessionService
      * @return Operation result
      */
     @POST
-    @Path( "/{sessionId}/signOut" )
+    @Path( "/{sessionId}/logout" )
     @Consumes( MediaType.TEXT_PLAIN )
-    @Produces( MediaType.TEXT_PLAIN )
-    UserOperationResult signOut( @PathParam( "sessionId" )
-                                 String sessionId );
+    @Produces( MediaType.APPLICATION_JSON )
+    UserOperationResponse logout( @PathParam( "sessionId" )
+                                  String sessionId );
 
     /**
      * Sign up new user directly with request/confirm process

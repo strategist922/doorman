@@ -9,8 +9,9 @@ import org.cyclopsgroup.doorman.api.SessionService;
 import org.cyclopsgroup.doorman.api.User;
 import org.cyclopsgroup.doorman.api.UserSignUpResult;
 import org.cyclopsgroup.doorman.api.UserType;
+import org.cyclopsgroup.doorman.api.beans.LoginResponse;
 import org.cyclopsgroup.doorman.api.beans.UserCredential;
-import org.cyclopsgroup.doorman.api.beans.UserLoginResponse;
+import org.cyclopsgroup.doorman.api.beans.UserOperationResponse;
 import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
 import org.cyclopsgroup.doorman.api.beans.UserSession;
 import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
@@ -137,20 +138,20 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
-    public UserLoginResponse login( String sessionId, UserCredential cred )
+    public LoginResponse login( String sessionId, UserCredential cred )
     {
         StoredUser user = userDao.findNonPendingUser( cred.getUserName() );
         if ( user == null )
         {
-            return new UserLoginResponse( UserOperationResult.NO_SUCH_IDENTITY );
+            return new LoginResponse( UserOperationResult.NO_SUCH_IDENTITY, null );
         }
         if ( !StringUtils.equals( user.getPasswordStrategy().encode( cred.getPassword(), user.getUserId() ),
                                   user.getPassword() ) )
         {
-            return new UserLoginResponse( UserOperationResult.AUTHENTICATION_FAILURE );
+            return new LoginResponse( UserOperationResult.AUTHENTICATION_FAILURE, null );
         }
         userSessionDao.updateUser( sessionId, user );
-        return new UserLoginResponse( UserOperationResult.SUCCESSFUL );
+        return new LoginResponse( UserOperationResult.SUCCESSFUL, user.getUserId() );
     }
 
     /**
@@ -199,10 +200,10 @@ public class DefaultSessionService
      */
     @Override
     @Transactional
-    public UserOperationResult signOut( String sessionId )
+    public UserOperationResponse logout( String sessionId )
     {
         userSessionDao.updateUser( sessionId, null );
-        return UserOperationResult.SUCCESSFUL;
+        return new UserOperationResponse( UserOperationResult.SUCCESSFUL );
     }
 
     /**

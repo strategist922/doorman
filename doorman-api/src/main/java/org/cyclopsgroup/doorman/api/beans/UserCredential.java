@@ -1,5 +1,8 @@
 package org.cyclopsgroup.doorman.api.beans;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class UserCredential
     extends BaseBean
 {
@@ -25,5 +28,15 @@ public class UserCredential
     public final void setPassword( String password )
     {
         this.password = password;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String toString()
+    {
+        String masked = StringUtils.repeat( "*", password.length() );
+        return new ToStringBuilder( this ).append( "userName", userName ).append( "password", masked ).toString();
     }
 }

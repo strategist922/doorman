@@ -14,6 +14,7 @@
     <jaxrs:server id="doormanService" address="/v1/">
         <jaxrs:serviceBeans>
             <ref bean="receptionService" />
+            <ref bean="sessionService" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />

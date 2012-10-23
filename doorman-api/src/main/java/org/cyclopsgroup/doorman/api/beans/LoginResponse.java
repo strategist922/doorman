@@ -1,17 +1,20 @@
 package org.cyclopsgroup.doorman.api.beans;
 
-public class UserLoginResponse
+public class LoginResponse
     extends BaseBean
 {
     private UserOperationResult result;
 
-    public UserLoginResponse()
+    private String userId;
+
+    public LoginResponse()
     {
     }
 
-    public UserLoginResponse( UserOperationResult result )
+    public LoginResponse( UserOperationResult result, String userId )
     {
         this.result = result;
+        this.userId = userId;
     }
 
     public final UserOperationResult getResult()
@@ -19,8 +22,18 @@ public class UserLoginResponse
         return result;
     }
 
+    public final String getUserId()
+    {
+        return userId;
+    }
+
     public final void setResult( UserOperationResult result )
     {
         this.result = result;
+    }
+
+    public final void setUserId( String userId )
+    {
+        this.userId = userId;
     }
 }
