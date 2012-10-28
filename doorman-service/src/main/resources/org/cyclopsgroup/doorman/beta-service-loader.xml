@@ -5,12 +5,11 @@
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="awsCredentials"
-        class="org.cyclopsgroup.kaufman.aws.EnvironmentalAWSCredentials" />
+        class="com.amazonaws.auth.EnvironmentVariableCredentialsProvider" />
     <bean id="doormanBetaProperties"
         class="org.cyclopsgroup.kaufman.aws.dycfg.DynamoDBPropertiesFactoryBean">
         <constructor-arg>
-            <bean
-                class="com.amazonaws.services.dynamodb.AmazonDynamoDBClient">
+            <bean class="com.amazonaws.services.dynamodb.AmazonDynamoDBClient">
                 <constructor-arg ref="awsCredentials" />
             </bean>
         </constructor-arg>
