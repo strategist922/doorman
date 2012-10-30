@@ -5,7 +5,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.MatrixParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,7 +15,6 @@ import org.cyclopsgroup.doorman.api.beans.UserCredential;
 import org.cyclopsgroup.doorman.api.beans.UserOperationResponse;
 import org.cyclopsgroup.doorman.api.beans.UserOperationResult;
 import org.cyclopsgroup.doorman.api.beans.UserSession;
-import org.cyclopsgroup.doorman.api.beans.UserSessionAttributes;
 
 /**
  * The facade service that manages user authentication, session management and user management
@@ -42,20 +40,6 @@ public interface SessionService
                                        String sessionId, @PathParam( "userId" )
                                        String userId, @PathParam( "token" )
                                        String token );
-
-    /**
-     * Force to sign in without credentials
-     *
-     * @param sessionId Current session ID
-     * @param userName Name of user to sign in
-     * @return Result
-     */
-    @POST
-    @Path( "/{sessionId}/forceSignIn" )
-    @Consumes( MediaType.TEXT_PLAIN )
-    @Produces( MediaType.TEXT_PLAIN )
-    UserOperationResult forceSignIn( @PathParam( "sessionId" )
-                                     String sessionId, String userName );
 
     /**
      * Get details of current session
@@ -142,18 +126,4 @@ public interface SessionService
                                 String sessionId, User user, @MatrixParam( "type" )
                                 @DefaultValue( "LOCAL" )
                                 UserType type );
-
-    /**
-     * Start a new session with given ID
-     *
-     * @param sessionId Given session ID to start
-     * @param attributes Attributes attached to the new session
-     * @return The session it starts
-     */
-    @PUT
-    @Path( "/{sessionId}" )
-    @Consumes( MediaType.APPLICATION_JSON )
-    @Produces( MediaType.APPLICATION_JSON )
-    UserSession startSession( @PathParam( "sessionId" )
-                              String sessionId, UserSessionAttributes attributes );
 }

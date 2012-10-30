@@ -8,10 +8,6 @@ package org.cyclopsgroup.doorman.api.beans;
 public enum UserOperationResult
 {
     /**
-     * Operation is successful
-     */
-    SUCCESSFUL( true ),
-    /**
      * Operation failed because identity can't be authenticated correctly
      */
     AUTHENTICATION_FAILURE( false ),
@@ -20,9 +16,17 @@ public enum UserOperationResult
      */
     IDENTITY_EXISTED( false ),
     /**
+     * Nothing happened
+     */
+    NO_OP( true ),
+    /**
      * Expected identity doesn't exist
      */
-    NO_SUCH_IDENTITY( false );
+    NO_SUCH_IDENTITY( false ),
+    /**
+     * Operation is successful
+     */
+    SUCCESSFUL( true );
 
     private final boolean successful;
 

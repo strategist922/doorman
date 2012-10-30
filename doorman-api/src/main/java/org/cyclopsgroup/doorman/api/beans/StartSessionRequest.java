@@ -7,18 +7,6 @@ public class StartSessionRequest
 
     private String traceNumber;
 
-    private String sessionId;
-
-    public final String getSessionId()
-    {
-        return sessionId;
-    }
-
-    public final void setSessionId( String sessionId )
-    {
-        this.sessionId = sessionId;
-    }
-
     public final ClientDevice getClientDevice()
     {
         return clientDevice;
