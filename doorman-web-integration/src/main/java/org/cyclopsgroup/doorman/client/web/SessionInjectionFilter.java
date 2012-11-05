@@ -55,6 +55,8 @@ public class SessionInjectionFilter
 
     private SessionInjectionFilterContext context;
 
+    private ThreadLocalSessionProvider sessionProvider;
+
     public void destroy()
     {
     }
@@ -133,6 +135,7 @@ public class SessionInjectionFilter
             }
             req.getSession().setAttribute( context.getSessionAttribute(), session );
         }
+        sessionProvider.bindObject( session );
         try
         {
             chain.doFilter( request, response );
@@ -152,6 +155,10 @@ public class SessionInjectionFilter
                 throw e;
             }
         }
+        finally
+        {
+            sessionProvider.unbindObject();
+        }
     }
 
     private void forwardToSignInUrl( HttpServletRequest req, HttpServletResponse resp )
@@ -162,7 +169,7 @@ public class SessionInjectionFilter
         {
             url.append( "?" + req.getQueryString() );
         }
-        String signInUrl = context.getSignInUrl();
+        String signInUrl = context.getLoginUrl();
         if ( signInUrl.indexOf( "{contextPath}" ) != -1 )
         {
             signInUrl = StringUtils.replace( signInUrl, "{contextPath}", req.getContextPath() );
@@ -191,5 +198,6 @@ public class SessionInjectionFilter
             WebApplicationContextUtils.getRequiredWebApplicationContext( filterConfig.getServletContext() );
         context =
             (SessionInjectionFilterContext) applicationContext.getBean( name, SessionInjectionFilterContext.class );
+        sessionProvider = applicationContext.getBean( ThreadLocalSessionProvider.class );
     }
 }
