@@ -1,9 +1,19 @@
 package org.cyclopsgroup.doorman.api.beans;
 
-
 public class SessionCredential
     extends BaseBean
 {
+    public static SessionCredential fromToken( String token )
+    {
+        int separatorIndex = token.indexOf( ':' );
+        if ( separatorIndex == -1 )
+        {
+            return new SessionCredential( token, null );
+        }
+        return new SessionCredential( token.substring( 0, separatorIndex ), token.substring( separatorIndex + 1,
+                                                                                             token.length() ) );
+    }
+
     private String sessionId;
 
     private String sessionSecret;
@@ -42,5 +52,15 @@ public class SessionCredential
     public final void setSessionSecret( String sessionSecret )
     {
         this.sessionSecret = sessionSecret;
+    }
+
+    public String toToken()
+    {
+        StringBuilder s = new StringBuilder( sessionId );
+        if ( sessionSecret != null )
+        {
+            s.append( ':' ).append( sessionSecret );
+        }
+        return s.toString();
     }
 }

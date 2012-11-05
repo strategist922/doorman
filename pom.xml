@@ -27,7 +27,7 @@
 	</distributionManagement>
 	<modules>
 		<module>doorman-api</module>
-		<module>doorman-service</module>
+		<module>doorman-web-integration</module>
                 <module>doorman-in-memory</module>
 	</modules>
 </project>

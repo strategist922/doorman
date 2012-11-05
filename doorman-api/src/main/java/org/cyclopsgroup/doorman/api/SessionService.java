@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.cyclopsgroup.doorman.api.beans.FacebookLoginRequest;
 import org.cyclopsgroup.doorman.api.beans.LoginResponse;
 import org.cyclopsgroup.doorman.api.beans.UserCredential;
 import org.cyclopsgroup.doorman.api.beans.UserOperationResponse;
@@ -69,6 +70,25 @@ public interface SessionService
     LoginResponse login( @PathParam( "sessionId" )
                          String sessionId, UserCredential credential );
 
+    @POST
+    @Path( "/{sessionId}/loginWithFacebook" )
+    @Consumes( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.APPLICATION_JSON )
+    LoginResponse loginWithFacebook( String sessionId, FacebookLoginRequest request );
+
+    /**
+     * Sign out from current session
+     *
+     * @param sessionId Session ID of current session
+     * @return Operation result
+     */
+    @POST
+    @Path( "/{sessionId}/logout" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    @Produces( MediaType.APPLICATION_JSON )
+    UserOperationResponse logout( @PathParam( "sessionId" )
+                                  String sessionId );
+
     /**
      * Update existing session
      *
@@ -96,19 +116,6 @@ public interface SessionService
     @Produces( MediaType.TEXT_PLAIN )
     UserSignUpResult requestSignUp( @PathParam( "sessionId" )
                                     String sessionId, User user );
-
-    /**
-     * Sign out from current session
-     *
-     * @param sessionId Session ID of current session
-     * @return Operation result
-     */
-    @POST
-    @Path( "/{sessionId}/logout" )
-    @Consumes( MediaType.TEXT_PLAIN )
-    @Produces( MediaType.APPLICATION_JSON )
-    UserOperationResponse logout( @PathParam( "sessionId" )
-                                  String sessionId );
 
     /**
      * Sign up new user directly with request/confirm process
